@@ -1,0 +1,2493 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <title>Império Frutas & Cia - A banca da saúde</title>
+    <!-- Font Awesome para os ícones -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+
+    <style>
+      /* ==========================================================================
+           1) DESIGN TOKENS (Baseados no theme.css fornecido)
+        ========================================================================== */
+      @import url("https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap");
+
+      :root {
+        /* Fundo e Superfícies */
+        --bg-base: #04240d;
+        --bg-surface: rgba(10, 53, 22, 0.7);
+        --bg-input-dark: rgba(0, 0, 0, 0.45);
+
+        /* Marca */
+        --brand-gold: #ffc107;
+        --brand-gold-dark: #d4a700;
+        --brand-gold-glow: rgba(244, 195, 0, 0.3);
+
+        --brand-green-action: #1a8b38;
+        --brand-green-hover: #14702c;
+
+        --brand-whatsapp: #25d366;
+        --brand-danger: #ff4b4b;
+
+        /* Texto */
+        --text-main: #ffffff;
+        --text-muted: #8aa694;
+
+        /* Bordas e sombras */
+        --border-subtle: rgba(255, 255, 255, 0.12);
+        --border-gold: rgba(244, 195, 0, 0.4);
+
+        --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.25);
+        --shadow-md: 0 10px 26px rgba(0, 0, 0, 0.35);
+        --shadow-inner: inset 0 2px 6px rgba(0, 0, 0, 0.3);
+        --shadow-float: 0 12px 32px rgba(0, 0, 0, 0.45);
+
+        /* Motion & Layout */
+        --ease-spring: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        --transition-fast: 0.2s ease-in-out;
+        --container: 1050px;
+        --radius-md: 12px;
+        --radius-lg: 20px;
+        --radius-pill: 50px;
+      }
+
+      /* TEMA CLARO */
+      [data-theme="light"] {
+        --bg-base: #f4f9f4;
+        --bg-surface: #ffffff;
+        --bg-input-dark: #f0f0f0;
+        --brand-gold: #fbc02d;
+        --brand-gold-dark: #f57f17;
+        --brand-gold-glow: rgba(251, 192, 45, 0.3);
+        --brand-green-action: #1e7d32;
+        --brand-green-hover: #1b5e20;
+        --text-main: #222222;
+        --text-muted: #666666;
+        --border-subtle: rgba(0, 0, 0, 0.1);
+        --border-gold: rgba(251, 192, 45, 0.4);
+        --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.05);
+        --shadow-md: 0 10px 26px rgba(0, 0, 0, 0.1);
+        --shadow-inner: inset 0 2px 6px rgba(0, 0, 0, 0.05);
+        --shadow-float: 0 12px 32px rgba(0, 0, 0, 0.15);
+      }
+
+      [data-theme="light"] body {
+        background-image: none;
+      }
+      [data-theme="light"] .header {
+        background: rgba(244, 249, 244, 0.95);
+      }
+
+      /* ==========================================================================
+           2) RESET & BASE
+        ========================================================================== */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family:
+          "Nunito",
+          system-ui,
+          -apple-system,
+          sans-serif;
+        touch-action: manipulation;
+      }
+      html {
+        scroll-behavior: smooth;
+        scroll-padding-top: 90px;
+      }
+      body {
+        background-color: var(--bg-base);
+        background-image: radial-gradient(
+          circle at top center,
+          #0a2e15 0%,
+          var(--bg-base) 100%
+        );
+        color: var(--text-main);
+        line-height: 1.6;
+        padding-bottom: 40px;
+        transition:
+          background-color 0.3s ease,
+          color 0.3s ease;
+      }
+      .container {
+        max-width: var(--container);
+        margin: 0 auto;
+        padding: 0 20px;
+      }
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+      img {
+        max-width: 100%;
+        display: block;
+      }
+
+      /* Custom Scrollbar */
+      ::-webkit-scrollbar {
+        width: 8px;
+      }
+      ::-webkit-scrollbar-track {
+        background: var(--bg-base);
+      }
+      ::-webkit-scrollbar-thumb {
+        background: var(--brand-green-action);
+        border-radius: 4px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: var(--brand-green-hover);
+      }
+
+      /* ==========================================================================
+           3) UTILITÁRIOS E ANIMAÇÕES
+        ========================================================================== */
+      .fade-in-up {
+        animation: fadeInUp 0.65s var(--ease-spring) both;
+      }
+      .pulse-hover {
+        transition: transform 0.2s ease;
+        will-change: transform;
+      }
+      .pulse-hover:hover {
+        transform: translateY(-3px);
+      }
+      .pop {
+        animation: badgePop 0.3s var(--ease-spring);
+      }
+
+      .text-gradient {
+        background: linear-gradient(
+          90deg,
+          var(--brand-gold) 0%,
+          #ffe08a 35%,
+          var(--brand-gold-dark) 100%
+        );
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+      }
+      .section-title {
+        font-size: 2rem;
+        font-weight: 900;
+        color: var(--text-main);
+        margin: 0 0 30px 0;
+        text-align: center;
+      }
+
+      /* NOVO: Filtros, Pesquisa e Banner de Loja Fechada */
+      .store-status-banner {
+        background: var(--brand-danger);
+        color: white;
+        text-align: center;
+        padding: 12px;
+        font-weight: 900;
+        font-size: 0.95rem;
+        display: none;
+        z-index: 1001;
+        position: relative;
+      }
+
+      .catalog-controls {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        margin-bottom: 25px;
+      }
+      .search-bar {
+        width: 100%;
+        padding: 14px 20px;
+        border-radius: 12px;
+        border: 1px solid var(--border-subtle);
+        background: var(--bg-input-dark);
+        color: var(--text-main);
+        font-size: 1rem;
+        font-weight: bold;
+        outline: none;
+        transition: 0.3s;
+      }
+      .search-bar:focus {
+        border-color: var(--brand-gold);
+        box-shadow: 0 0 0 3px var(--brand-gold-glow);
+      }
+      .search-bar::placeholder {
+        color: var(--text-muted);
+      }
+
+      .filters-container {
+        display: flex;
+        gap: 10px;
+        overflow-x: auto;
+        padding-bottom: 5px;
+        scrollbar-width: none;
+      }
+      .filters-container::-webkit-scrollbar {
+        display: none;
+      }
+      .filter-btn {
+        padding: 8px 18px;
+        border-radius: 20px;
+        border: 1px solid var(--border-subtle);
+        background: var(--bg-input-dark);
+        color: var(--text-muted);
+        cursor: pointer;
+        white-space: nowrap;
+        font-weight: 800;
+        transition: all 0.2s;
+      }
+      .filter-btn:hover {
+        color: var(--text-main);
+        border-color: var(--brand-gold);
+      }
+      .filter-btn.active {
+        background: var(--brand-gold);
+        color: #111;
+        border-color: var(--brand-gold);
+        box-shadow: var(--shadow-sm);
+      }
+
+      /* Ajuste do Checkout para Observações e Taxas */
+      .cart-totals-wrapper {
+        margin-top: 20px;
+        background: var(--bg-input-dark);
+        border-radius: 16px;
+        padding: 15px;
+        border: 1px solid var(--border-subtle);
+      }
+      .cart-sub-row {
+        display: flex;
+        justify-content: space-between;
+        color: var(--text-muted);
+        font-weight: bold;
+        margin-bottom: 10px;
+        font-size: 0.95rem;
+      }
+
+      /* ==========================================================================
+           4) HEADER STICKY
+        ========================================================================== */
+      .header {
+        background: rgba(4, 36, 13, 0.85);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        padding: 12px 0;
+        border-bottom: 1px solid var(--border-subtle);
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        transition: background-color 0.3s ease;
+      }
+      .header-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-weight: 900;
+        font-size: 1.2rem;
+      }
+      .brand-mark {
+        width: 44px;
+        height: 44px;
+        border-radius: 14px;
+        overflow: hidden;
+        border: 1px solid var(--border-subtle);
+        background: var(--bg-surface);
+      }
+      .brand-mark img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      .brand-text {
+        display: grid;
+        line-height: 1.1;
+      }
+      .brand-sub {
+        font-size: 0.75rem;
+        color: var(--text-muted);
+        font-weight: 800;
+      }
+
+      .header-actions {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .theme-toggle-btn {
+        background: transparent;
+        border: 1px solid var(--border-subtle);
+        color: var(--brand-gold);
+        border-radius: 50%;
+        width: 44px;
+        height: 44px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-size: 1.2rem;
+      }
+      .theme-toggle-btn:hover {
+        background: var(--bg-surface);
+      }
+
+      .btn-cart {
+        background: var(--bg-surface);
+        color: var(--brand-gold);
+        border: 1px solid var(--border-gold);
+        padding: 0.6rem 1.2rem;
+        border-radius: var(--radius-pill);
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.2s;
+        cursor: pointer;
+      }
+      .btn-cart:hover {
+        background: var(--brand-gold);
+        color: #111;
+      }
+      .btn-cart .badge {
+        background: var(--brand-danger);
+        color: white;
+        padding: 2px 8px;
+        border-radius: 50%;
+        font-size: 0.85rem;
+      }
+
+      /* ==========================================================================
+           5) HERO (CAPA)
+        ========================================================================== */
+      .hero-wrapper {
+        position: relative;
+        overflow: hidden;
+        border-bottom: 1px solid var(--border-subtle);
+        background:
+          radial-gradient(
+            circle at 20% 10%,
+            rgba(244, 195, 0, 0.16),
+            transparent 55%
+          ),
+          radial-gradient(
+            circle at 85% 25%,
+            rgba(26, 139, 56, 0.16),
+            transparent 55%
+          );
+        padding: 60px 0;
+      }
+      .hero-glow {
+        position: absolute;
+        inset: -40px;
+        background: radial-gradient(
+          circle at 50% 20%,
+          rgba(244, 195, 0, 0.22),
+          transparent 60%
+        );
+        filter: blur(22px);
+        opacity: 0.75;
+        pointer-events: none;
+      }
+
+      .floating-fruit {
+        position: absolute;
+        font-size: 2.2rem;
+        opacity: 0.85;
+        filter: drop-shadow(0 10px 18px rgba(0, 0, 0, 0.35));
+        pointer-events: none;
+        animation: floaty 6.8s ease-in-out infinite;
+      }
+      .f-1 {
+        left: 10%;
+        top: 20%;
+      }
+      .f-2 {
+        right: 15%;
+        top: 30%;
+        font-size: 2.5rem;
+        animation-duration: 7.6s;
+      }
+      .f-3 {
+        right: 25%;
+        bottom: 15%;
+        animation-duration: 6.2s;
+      }
+
+      .hero {
+        text-align: center;
+        position: relative;
+        z-index: 1;
+      }
+      .hero-img {
+        max-width: 600px;
+        border-radius: 20px;
+        box-shadow: var(--shadow-md);
+        margin: 0 auto 20px;
+        border: 3px solid var(--border-gold);
+      }
+      .hero-pin {
+        color: var(--brand-danger);
+        font-size: 0.9rem;
+        font-weight: 900;
+        text-transform: uppercase;
+        margin-bottom: 15px;
+        display: inline-block;
+        background: var(--bg-surface);
+        padding: 5px 15px;
+        border-radius: var(--radius-pill);
+        border: 1px solid var(--border-subtle);
+      }
+      .hero-title {
+        font-size: clamp(2.2rem, 5vw, 3.5rem);
+        font-weight: 900;
+        line-height: 1.15;
+        margin-bottom: 15px;
+        text-shadow: 0 12px 34px rgba(0, 0, 0, 0.35);
+      }
+      .hero-subtitle {
+        color: var(--text-muted);
+        font-size: 1.1rem;
+        font-weight: 700;
+        max-width: 760px;
+        margin: 0 auto 30px;
+      }
+
+      .hero-actions {
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+      .btn {
+        border: none;
+        cursor: pointer;
+        border-radius: 12px;
+        padding: 14px 24px;
+        font-weight: 900;
+        font-size: 1rem;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        transition: all 0.3s var(--ease-spring);
+      }
+      .btn:active {
+        transform: scale(0.96);
+      }
+      .btn-primary {
+        background: linear-gradient(
+          135deg,
+          var(--brand-gold) 0%,
+          var(--brand-gold-dark) 100%
+        );
+        color: #3b2300;
+      }
+      .btn-primary:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px var(--brand-gold-glow);
+      }
+      .btn-outline {
+        background: var(--bg-surface);
+        color: var(--text-main);
+        border: 1px solid var(--border-subtle);
+      }
+      .btn-outline:hover {
+        background: rgba(255, 255, 255, 0.1);
+      }
+
+      /* Trust Row */
+      .trust-row {
+        display: flex;
+        justify-content: center;
+        gap: 1.5rem;
+        flex-wrap: wrap;
+        margin-top: 3rem;
+      }
+      .trust-card {
+        background: var(--bg-surface);
+        padding: 1.5rem;
+        border-radius: var(--radius-md);
+        box-shadow: var(--shadow-sm);
+        flex: 1;
+        min-width: 250px;
+        text-align: center;
+        border: 1px solid var(--border-subtle);
+        border-bottom: 4px solid var(--brand-gold);
+        backdrop-filter: blur(10px);
+      }
+      .trust-card i {
+        font-size: 2rem;
+        color: var(--brand-gold);
+        margin-bottom: 0.5rem;
+      }
+      .trust-card h3 {
+        font-size: 1.1rem;
+        margin-bottom: 0.5rem;
+        color: var(--text-main);
+        font-weight: 900;
+      }
+      .trust-card p {
+        font-size: 0.9rem;
+        color: var(--text-muted);
+      }
+
+      /* ==========================================================================
+           6) COMO FUNCIONA
+        ========================================================================== */
+      .info-section {
+        padding: 5rem 0;
+      }
+      .steps-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 1.5rem;
+      }
+      .step {
+        background: var(--bg-surface);
+        padding: 2rem;
+        border-radius: var(--radius-md);
+        box-shadow: var(--shadow-sm);
+        border: 1px solid var(--border-subtle);
+        position: relative;
+        overflow: hidden;
+        transition: transform 0.3s ease;
+      }
+      .step:hover {
+        transform: translateY(-5px);
+        border-color: var(--brand-gold);
+      }
+      .step-number {
+        background: var(--brand-green-action);
+        color: #fff;
+        width: 45px;
+        height: 45px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        font-weight: bold;
+        font-size: 1.2rem;
+        margin-bottom: 1rem;
+        box-shadow: 0 4px 10px rgba(26, 139, 56, 0.4);
+      }
+      .step h4 {
+        color: var(--text-main);
+        margin-bottom: 0.5rem;
+        font-size: 1.2rem;
+        font-weight: 900;
+      }
+      .step p {
+        color: var(--text-muted);
+        font-size: 0.95rem;
+      }
+
+      /* ==========================================================================
+           7) CATÁLOGO E CARDS DE PRODUTO
+        ========================================================================== */
+      .product-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 20px;
+      }
+
+      .pcard {
+        background: var(--bg-surface);
+        backdrop-filter: blur(10px);
+        border: 1px solid var(--border-subtle);
+        box-shadow: var(--shadow-sm);
+        border-radius: 20px;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 12px;
+        transition:
+          transform 0.3s var(--ease-spring),
+          border-color 0.3s ease;
+        position: relative;
+      }
+      .pcard:hover {
+        transform: translateY(-4px);
+        border-color: var(--brand-gold);
+      }
+
+      .promo-badge {
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        z-index: 2;
+        padding: 6px 12px;
+        border-radius: 999px;
+        font-weight: 900;
+        font-size: 0.75rem;
+        background: var(--brand-gold);
+        color: #111;
+        box-shadow: 0 4px 10px var(--brand-gold-glow);
+      }
+
+      .photo-container {
+        width: 100%;
+        height: 160px;
+        border-radius: 12px;
+        overflow: hidden;
+        border: 1px solid var(--border-subtle);
+        background: var(--bg-input-dark);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .pimg {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+      }
+      .pcard:hover .pimg {
+        transform: scale(1.05);
+      }
+
+      .pname {
+        font-weight: 900;
+        font-size: 1.2rem;
+        color: var(--text-main);
+        text-align: center;
+      }
+
+      .price-stack {
+        text-align: center;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+      .price {
+        color: var(--brand-gold);
+        font-weight: 900;
+        font-size: 1.4rem;
+        line-height: 1.1;
+      }
+
+      /* Estilo melhorado para o preço dinâmico (legibilidade em ambos os temas) */
+      .dynamic-price-tag {
+        font-size: 0.95rem;
+        font-weight: 800;
+        padding: 8px;
+        border-radius: 8px;
+        text-align: center;
+        width: 100%;
+        transition: all 0.3s ease;
+      }
+
+      /* Tema Escuro (Padrão) */
+      .dynamic-price-tag {
+        background: rgba(0, 0, 0, 0.4);
+        color: #ffffff;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+      .dynamic-price-tag strong {
+        color: var(--brand-gold);
+        font-weight: 900;
+      }
+
+      /* Tema Claro */
+      [data-theme="light"] .dynamic-price-tag {
+        background: #e8f5e9;
+        color: #000000;
+        border: 1px solid #c8e6c9;
+      }
+      [data-theme="light"] .dynamic-price-tag strong {
+        color: var(--brand-green-hover);
+      }
+
+      /* Controlo de Quantidade Estilizado (Botões +/-) */
+      .qty-control {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        padding: 6px;
+        background: var(--bg-input-dark);
+        border: 1px solid var(--border-subtle);
+        border-radius: 14px;
+        margin-top: auto;
+      }
+      .qty-btn {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid transparent;
+        color: var(--brand-gold);
+        min-width: 40px;
+        min-height: 40px;
+        border-radius: 10px;
+        font-size: 1.5rem;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s ease;
+        user-select: none;
+      }
+      .qty-btn:hover {
+        background: rgba(255, 255, 255, 0.15);
+        border-color: var(--brand-gold);
+        color: var(--text-main);
+      }
+      .qty-btn:active {
+        transform: scale(0.9);
+        background: var(--brand-gold);
+        color: #000;
+      }
+      .qty-input {
+        flex-grow: 1;
+        min-width: 50px;
+        background: transparent;
+        border: none;
+        color: var(--text-main);
+        font-weight: 900;
+        font-size: 1.2rem;
+        text-align: center;
+        outline: none;
+      }
+
+      /* NOVO: Seleção em formato de Pílulas (Fatias) */
+      .fraction-selector {
+        display: flex;
+        gap: 6px;
+        width: 100%;
+        background: var(--bg-input-dark);
+        padding: 6px;
+        border-radius: 14px;
+        border: 1px solid var(--border-subtle);
+        margin-top: auto;
+      }
+      .fraction-btn {
+        flex: 1;
+        text-align: center;
+        padding: 10px 4px;
+        font-size: 0.85rem;
+        font-weight: 800;
+        color: var(--text-muted);
+        border-radius: 10px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        user-select: none;
+        line-height: 1;
+      }
+      .fraction-btn:hover {
+        color: var(--text-main);
+        background: rgba(255, 255, 255, 0.05);
+      }
+      .fraction-btn.active {
+        background: var(--brand-gold);
+        color: #111;
+        box-shadow: 0 4px 10px var(--brand-gold-glow);
+      }
+
+      .btn-add {
+        width: 100%;
+        min-height: 44px;
+        border: none;
+        border-radius: 12px;
+        background: var(--brand-green-action);
+        color: #fff;
+        font-weight: 900;
+        font-size: 1rem;
+        letter-spacing: 0.05em;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        margin-top: 8px;
+      }
+      .btn-add:hover {
+        background: var(--brand-green-hover);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(26, 139, 56, 0.4);
+      }
+
+      /* ==========================================================================
+           8) CHECKOUT E FORMULÁRIOS
+        ========================================================================== */
+      .checkout-section {
+        padding: 5rem 0;
+        border-top: 1px solid var(--border-subtle);
+        background: var(--bg-input-dark);
+      }
+      .checkout-container {
+        background: var(--bg-surface);
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-lg);
+        border: 1px solid var(--border-subtle);
+        display: grid;
+        overflow: hidden;
+      }
+      @media (min-width: 768px) {
+        .checkout-container {
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+
+      .checkout-cart {
+        padding: 2rem;
+        border-bottom: 1px solid var(--border-subtle);
+        background: rgba(0, 0, 0, 0.1);
+      }
+      @media (min-width: 768px) {
+        .checkout-cart {
+          border-bottom: none;
+          border-right: 1px solid var(--border-subtle);
+        }
+      }
+
+      .checkout-cart h3 {
+        color: var(--text-main);
+        margin-bottom: 1.5rem;
+        font-weight: 900;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .cart-items {
+        max-height: 350px;
+        overflow-y: auto;
+        margin-bottom: 1rem;
+        padding-right: 5px;
+      }
+      .cart-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem 0;
+        border-bottom: 1px solid var(--border-subtle);
+      }
+      .cart-item-title {
+        font-weight: bold;
+        color: var(--text-main);
+        font-size: 1.05rem;
+      }
+      .cart-item-sub {
+        font-size: 0.85rem;
+        color: var(--text-muted);
+        margin-top: 4px;
+      }
+      .btn-remove {
+        background: rgba(255, 75, 75, 0.1);
+        color: var(--brand-danger);
+        border: 1px solid transparent;
+        padding: 0.6rem;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: 0.2s;
+      }
+      .btn-remove:hover {
+        background: var(--brand-danger);
+        color: #fff;
+        transform: scale(1.05);
+      }
+
+      .total-box {
+        padding: 20px;
+        border-radius: 16px;
+        background: linear-gradient(
+          135deg,
+          rgba(244, 195, 0, 0.1) 0%,
+          rgba(244, 195, 0, 0.02) 100%
+        );
+        border: 1px solid var(--border-gold);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 20px;
+      }
+      .total-box h2 {
+        color: var(--brand-gold);
+        font-weight: 900;
+        font-size: 1.2rem;
+        margin: 0;
+      }
+      .total-box strong {
+        font-size: 1.8rem;
+        font-weight: 900;
+        color: var(--brand-gold);
+      }
+
+      .checkout-form {
+        padding: 2rem;
+      }
+      .checkout-form h3 {
+        font-size: 1.1rem;
+        margin-bottom: 1rem;
+        color: var(--text-main);
+        font-weight: 900;
+      }
+
+      .form-group {
+        margin-bottom: 1rem;
+      }
+      input[type="text"],
+      input[type="number"],
+      textarea {
+        width: 100%;
+        min-height: 48px;
+        background: var(--bg-input-dark);
+        border: 1px solid var(--border-subtle);
+        border-radius: 12px;
+        color: var(--text-main);
+        padding: 16px;
+        font-size: 1rem;
+        font-weight: 700;
+        outline: none;
+        transition: 0.2s ease;
+        resize: vertical;
+      }
+      input:focus,
+      textarea:focus {
+        background: rgba(0, 0, 0, 0.6);
+        border-color: var(--brand-gold);
+        box-shadow: 0 0 0 3px var(--brand-gold-glow);
+      }
+
+      .cep-group {
+        display: flex;
+        gap: 0.5rem;
+      }
+      .cep-group button {
+        background: var(--brand-green-action);
+        color: white;
+        border: none;
+        border-radius: 12px;
+        padding: 0 1.2rem;
+        cursor: pointer;
+        transition: 0.2s;
+      }
+      .cep-group button:hover {
+        background: var(--brand-green-hover);
+      }
+
+      .payment-methods {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+        margin-bottom: 1.5rem;
+      }
+      .payment-option input[type="radio"] {
+        display: none;
+      }
+      .payment-option label {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 1rem 0.5rem;
+        border: 2px solid var(--border-subtle);
+        border-radius: 12px;
+        cursor: pointer;
+        font-weight: 800;
+        font-size: 0.9rem;
+        color: var(--text-muted);
+        gap: 8px;
+        background: var(--bg-input-dark);
+        transition: 0.2s;
+      }
+      .payment-option input[type="radio"]:checked + label {
+        border-color: var(--brand-gold);
+        background: rgba(244, 195, 0, 0.15);
+        color: var(--brand-gold);
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-sm);
+      }
+
+      .troco-container {
+        background: rgba(244, 195, 0, 0.1);
+        padding: 1.5rem;
+        border-radius: 12px;
+        margin-bottom: 1.5rem;
+        border-left: 4px solid var(--brand-gold);
+        display: none;
+      }
+      .troco-container label {
+        color: var(--brand-gold);
+        font-weight: 900;
+        display: block;
+        margin-bottom: 0.8rem;
+      }
+      #troco-calculado {
+        font-weight: 900;
+        margin-top: 10px;
+        font-size: 1.1rem;
+      }
+
+      #checkout-btn {
+        width: 100%;
+        background: linear-gradient(
+          135deg,
+          var(--brand-whatsapp) 0%,
+          #128c7e 100%
+        );
+        color: #fff;
+        padding: 16px;
+        border: none;
+        border-radius: 12px;
+        font-size: 1.2rem;
+        font-weight: 900;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        animation: pulse-whatsapp 2s infinite;
+        transition: transform 0.2s ease;
+      }
+      #checkout-btn:hover {
+        animation: none;
+        transform: translateY(-3px);
+        box-shadow: 0 10px 30px rgba(37, 211, 102, 0.4);
+      }
+
+      /* ==========================================================================
+           9) MAPA E FOOTER
+        ========================================================================== */
+      .map-card {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 28px;
+        padding: 28px;
+        border-radius: 22px;
+        border: 1px solid var(--border-subtle);
+        background: var(--bg-surface);
+        box-shadow: var(--shadow-float);
+        overflow: hidden;
+      }
+      @media (min-width: 980px) {
+        .map-card {
+          grid-template-columns: 1.05fr 1fr;
+        }
+      }
+
+      .map-info h3 {
+        color: var(--text-main);
+        font-size: 2rem;
+        margin-bottom: 20px;
+        font-weight: 900;
+      }
+      .map-item {
+        display: grid;
+        grid-template-columns: 28px 1fr;
+        gap: 12px;
+        padding: 16px;
+        border-radius: 16px;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        background: var(--bg-input-dark);
+        margin-bottom: 12px;
+      }
+      .map-item i {
+        color: var(--brand-gold);
+        font-size: 1.3rem;
+        margin-top: 2px;
+      }
+      .map-item strong {
+        display: block;
+        color: var(--text-main);
+        font-size: 1.1rem;
+        margin-bottom: 4px;
+      }
+      .map-item span {
+        color: var(--text-muted);
+        font-weight: 700;
+      }
+
+      .map-embed {
+        width: 100%;
+        min-height: 360px;
+        border-radius: 18px;
+        overflow: hidden;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: var(--shadow-sm);
+      }
+      .map-embed iframe {
+        width: 100%;
+        height: 100%;
+        border: none;
+        display: block;
+      }
+
+      .footer {
+        text-align: center;
+        padding: 40px 0;
+        border-top: 1px solid var(--border-subtle);
+        margin-top: 40px;
+      }
+      .footer-social {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+        margin-top: 20px;
+      }
+      .social-link {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background: var(--bg-input-dark);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--text-main);
+        font-size: 1.4rem;
+        border: 1px solid var(--border-subtle);
+        transition: all 0.3s;
+      }
+      .social-link:hover {
+        transform: translateY(-5px);
+        border-color: var(--brand-gold);
+        color: var(--brand-gold);
+      }
+
+      /* ==========================================================================
+           10) TOASTS (Notificações)
+        ========================================================================== */
+      #toast-container {
+        position: fixed;
+        top: 90px;
+        right: 20px;
+        z-index: 9999;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        pointer-events: none;
+      }
+      .toast {
+        background: var(--brand-green-action);
+        color: white;
+        padding: 1rem 1.5rem;
+        border-radius: 12px;
+        box-shadow: var(--shadow-md);
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        animation:
+          slideInRight 0.3s,
+          fadeOut 0.3s 2.7s forwards;
+      }
+
+      @keyframes slideInRight {
+        from {
+          transform: translateX(120%);
+          opacity: 0;
+        }
+        to {
+          transform: translateX(0);
+          opacity: 1;
+        }
+      }
+      @keyframes fadeOut {
+        from {
+          opacity: 1;
+        }
+        to {
+          opacity: 0;
+        }
+      }
+      @keyframes badgePop {
+        0% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.3);
+        }
+        100% {
+          transform: scale(1);
+        }
+      }
+      @keyframes pulse-whatsapp {
+        0% {
+          box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.5);
+        }
+        70% {
+          box-shadow: 0 0 0 15px rgba(37, 211, 102, 0);
+        }
+        100% {
+          box-shadow: 0 0 0 0 rgba(37, 211, 102, 0);
+        }
+      }
+      @keyframes floaty {
+        0% {
+          transform: translate3d(0, 0, 0);
+        }
+        50% {
+          transform: translate3d(0, -10px, 0);
+        }
+        100% {
+          transform: translate3d(0, 0, 0);
+        }
+      }
+      @keyframes fadeInUp {
+        from {
+          transform: translateY(20px);
+          opacity: 0;
+        }
+        to {
+          transform: translateY(0);
+          opacity: 1;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- AVISO DE LOJA FECHADA -->
+    <div id="store-status-banner" class="store-status-banner">
+      <i class="fas fa-store-slash"></i> Estamos fechados agora. Pode montar o
+      seu pedido para entrega amanhã!
+    </div>
+
+    <!-- HEADER STICKY -->
+    <header class="header">
+      <div class="container header-content">
+        <a href="#" class="brand">
+          <div class="brand-mark">
+            <img
+              src="assets/img/logo.jpg"
+              alt="Logo Império Frutas"
+              onerror="
+                this.parentElement.classList.add('fallback');
+                document.querySelector('.brand-fallback-icon').style.display =
+                  'inline-block';
+              "
+            />
+            <span class="brand-fallback-icon" style="display: none"
+              ><i class="fas fa-leaf"></i
+            ></span>
+          </div>
+          <div class="brand-text">
+            <span class="brand-name">Império Frutas</span>
+            <span class="brand-sub">A banca da saúde</span>
+          </div>
+        </a>
+
+        <div class="header-actions">
+          <button
+            class="theme-toggle-btn pulse-hover"
+            onclick="toggleTheme()"
+            aria-label="Alternar tema"
+          >
+            <i class="fas fa-moon" id="theme-icon"></i>
+          </button>
+          <a
+            href="#checkout"
+            class="btn-cart pulse-hover"
+            aria-label="Ir para o carrinho"
+          >
+            <i class="fas fa-shopping-cart"></i>
+            <span class="badge" id="header-cart-count">0</span>
+          </a>
+        </div>
+      </div>
+    </header>
+
+    <!-- HERO (CAPA) -->
+    <section class="hero-wrapper">
+      <div class="hero-glow"></div>
+      <div class="floating-fruit f-1">🍎</div>
+      <div class="floating-fruit f-2">🍌</div>
+      <div class="floating-fruit f-3">🍉</div>
+
+      <div class="container hero fade-in-up">
+        <div class="hero-pin">
+          <i class="fas fa-map-marker-alt"></i> Entrega rápida em Piraju-SP
+        </div>
+
+        <img
+          src="assets/img/logo.jpg"
+          alt="Império Frutas"
+          class="hero-img"
+          onerror="this.style.display = 'none'"
+        />
+
+        <h1 class="hero-title">
+          Frutas selecionadas<br /><span class="text-gradient"
+            >direto para sua mesa</span
+          >
+        </h1>
+        <p class="hero-subtitle">
+          Qualidade de feira com a comodidade do digital. Monte seu pedido agora
+          e receba no conforto de casa.
+        </p>
+
+        <div class="hero-actions">
+          <a href="#catalogo" class="btn btn-primary"
+            ><i class="fas fa-apple-alt"></i> Ver Cardápio</a
+          >
+          <a href="#checkout" class="btn btn-outline"
+            ><i class="fas fa-shopping-basket"></i> Finalizar Pedido</a
+          >
+        </div>
+
+        <!-- Trust Row -->
+        <div class="trust-row">
+          <div class="trust-card pulse-hover">
+            <i class="fas fa-bolt"></i>
+            <h3>Velocidade</h3>
+            <p>Montou o carrinho, mandou no WhatsApp. Simples assim.</p>
+          </div>
+          <div class="trust-card pulse-hover">
+            <i class="fas fa-star"></i>
+            <h3>Qualidade</h3>
+            <p>Fruta escolhida na mão, bonita e bem cuidada.</p>
+          </div>
+          <div class="trust-card pulse-hover">
+            <i class="fas fa-balance-scale"></i>
+            <h3>Preço Justo</h3>
+            <p>Você ajusta a quantidade. Paga o que faz sentido pra você.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- COMO FUNCIONA -->
+    <section class="info-section">
+      <div class="container">
+        <h2 class="section-title">Como Funciona</h2>
+        <div class="steps-container fade-in-up">
+          <div class="step">
+            <div class="step-number">1</div>
+            <h4>Escolha no cardápio</h4>
+            <p>
+              Selecione as frutas, ajuste a quantidade pelo peso ou unidade e
+              adicione ao carrinho.
+            </p>
+          </div>
+          <div class="step">
+            <div class="step-number">2</div>
+            <h4>Confira seu carrinho</h4>
+            <p>
+              Role até o final da página. Veja o total da compra, ajuste os
+              itens e informe o endereço.
+            </p>
+          </div>
+          <div class="step">
+            <div class="step-number">3</div>
+            <h4>Finalize no WhatsApp</h4>
+            <p>
+              O pedido vai formatado direto pro nosso WhatsApp. Sem complicação
+              ou formulários chatos.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CATÁLOGO -->
+    <main id="catalogo" class="container" style="padding-bottom: 4rem">
+      <h2 class="section-title text-gradient">Nossas Frutas</h2>
+
+      <!-- Controles de Catálogo (Pesquisa e Filtros) -->
+      <div class="catalog-controls fade-in-up">
+        <input
+          type="text"
+          id="search-input"
+          class="search-bar"
+          placeholder="🔍 Buscar frutas... (ex: Morango, Banana)"
+          oninput="handleSearch()"
+        />
+        <div class="filters-container" id="filters-container">
+          <button class="filter-btn active" onclick="setFilter('todos', this)">
+            Todas
+          </button>
+          <button class="filter-btn" onclick="setFilter('promocao', this)">
+            Promoções
+          </button>
+          <button class="filter-btn" onclick="setFilter('dia-a-dia', this)">
+            Dia a Dia
+          </button>
+          <button class="filter-btn" onclick="setFilter('citrus', this)">
+            Citrus
+          </button>
+          <button class="filter-btn" onclick="setFilter('doces', this)">
+            Doces
+          </button>
+        </div>
+      </div>
+
+      <div id="product-grid" class="product-grid">
+        <!-- Cards gerados via JS -->
+      </div>
+    </main>
+
+    <!-- CHECKOUT E CARRINHO -->
+    <section id="checkout" class="checkout-section">
+      <div class="container">
+        <h2 class="section-title">Finalize seu Pedido</h2>
+
+        <div class="checkout-container">
+          <!-- Coluna 1: O Carrinho -->
+          <div class="checkout-cart">
+            <h3>
+              <i
+                class="fas fa-shopping-basket"
+                style="color: var(--brand-gold)"
+              ></i>
+              Seus Itens
+            </h3>
+            <div id="cart-items" class="cart-items">
+              <!-- Itens injetados via JS -->
+            </div>
+
+            <div class="cart-totals-wrapper">
+              <div class="cart-sub-row">
+                <span>Subtotal</span>
+                <span id="cart-subtotal">R$ 0,00</span>
+              </div>
+              <div
+                class="cart-sub-row"
+                style="color: var(--brand-green-action)"
+              >
+                <span
+                  ><i class="fas fa-motorcycle"></i> Taxa de Entrega
+                  (Piraju)</span
+                >
+                <span>R$ 3,00</span>
+              </div>
+              <div class="total-box" style="margin-top: 10px; padding: 15px">
+                <h2>TOTAL</h2>
+                <strong id="cart-total">R$ 0,00</strong>
+              </div>
+            </div>
+          </div>
+
+          <!-- Coluna 2: Formulário -->
+          <div class="checkout-form">
+            <h3>
+              <i
+                class="fas fa-map-marker-alt"
+                style="color: var(--brand-gold)"
+              ></i>
+              Onde vamos entregar?
+            </h3>
+
+            <div class="form-group">
+              <input
+                type="text"
+                id="cliente-nome"
+                placeholder="Seu Nome Completo"
+                required
+              />
+            </div>
+
+            <!-- Busca CEP Automática -->
+            <div class="form-group cep-group">
+              <input
+                type="text"
+                id="cliente-cep"
+                placeholder="CEP (Opcional)"
+                maxlength="9"
+                oninput="formatarCEP(this)"
+                onblur="buscarCEP()"
+              />
+              <button
+                type="button"
+                onclick="buscarCEP()"
+                aria-label="Buscar endereço"
+              >
+                <i class="fas fa-search"></i>
+              </button>
+            </div>
+
+            <div class="form-group">
+              <input
+                type="text"
+                id="cliente-endereco"
+                placeholder="Rua, Número, Bairro"
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <textarea
+                id="pedido-observacoes"
+                placeholder="Alguma observação? (Ex: bananas mais verdes, cortar a melancia, etc)"
+                rows="2"
+              ></textarea>
+            </div>
+
+            <h3 style="margin-top: 2rem">
+              <i class="fas fa-wallet" style="color: var(--brand-gold)"></i>
+              Como prefere pagar?
+            </h3>
+            <div class="payment-methods">
+              <div class="payment-option">
+                <input
+                  type="radio"
+                  id="pay-pix"
+                  name="pagamento"
+                  value="Pix"
+                  checked
+                  onchange="toggleTroco()"
+                />
+                <label for="pay-pix"
+                  ><i
+                    class="fab fa-pix"
+                    style="color: #32bcad; font-size: 1.5rem"
+                  ></i>
+                  Pix</label
+                >
+              </div>
+              <div class="payment-option">
+                <input
+                  type="radio"
+                  id="pay-cartao"
+                  name="pagamento"
+                  value="Cartão"
+                  onchange="toggleTroco()"
+                />
+                <label for="pay-cartao"
+                  ><i
+                    class="fas fa-credit-card"
+                    style="color: #1976d2; font-size: 1.5rem"
+                  ></i>
+                  Cartão</label
+                >
+              </div>
+              <div class="payment-option">
+                <input
+                  type="radio"
+                  id="pay-dinheiro"
+                  name="pagamento"
+                  value="Dinheiro"
+                  onchange="toggleTroco()"
+                />
+                <label for="pay-dinheiro"
+                  ><i
+                    class="fas fa-money-bill-wave"
+                    style="color: #388e3c; font-size: 1.5rem"
+                  ></i>
+                  Dinheiro</label
+                >
+              </div>
+            </div>
+
+            <div id="troco-container" class="troco-container">
+              <label for="valor-dinheiro">Troco para quanto?</label>
+              <input
+                type="number"
+                id="valor-dinheiro"
+                placeholder="Ex: 50.00"
+                step="0.50"
+                min="0"
+              />
+              <div id="troco-calculado"></div>
+            </div>
+
+            <button id="checkout-btn" onclick="finalizarPedido()">
+              <i class="fab fa-whatsapp" style="font-size: 1.5rem"></i> Enviar
+              Pedido
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- MAPA -->
+    <section id="mapa" class="container" style="padding: 4rem 20px">
+      <h2 class="section-title">Nossa Banca</h2>
+      <div class="map-card">
+        <div class="map-info">
+          <h3>Império Frutas & Cia</h3>
+          <div class="map-item">
+            <i class="fas fa-map-marker-alt"></i>
+            <div>
+              <strong>Localização</strong>
+              <span>Rua João Grego, 287 - Piraju, SP</span>
+            </div>
+          </div>
+          <div class="map-item">
+            <i class="fas fa-clock"></i>
+            <div>
+              <strong>Horário</strong>
+              <span>Segunda a Sábado - Horário Comercial</span>
+            </div>
+          </div>
+          <div class="map-item">
+            <i class="fab fa-whatsapp"></i>
+            <div>
+              <strong>Contacto</strong>
+              <span>+55 14 99794-7727</span>
+            </div>
+          </div>
+          <a
+            href="https://maps.google.com/?q=Rua+João+Grego,+287+-+Piraju,+SP"
+            target="_blank"
+            class="btn btn-primary"
+            style="margin-top: 15px; width: fit-content"
+          >
+            <i class="fas fa-directions"></i> Traçar Rota
+          </a>
+        </div>
+        <div class="map-media">
+          <div class="map-embed">
+            <iframe
+              title="Mapa - Império Frutas"
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3664.721471415752!2d-49.3876024!3d-23.1906941!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x94c039785006b53b%3A0xc3f8e5f8f5f8f5f8!2sRua%20Jo%C3%A3o%20Grego%2C%20287!5e0!3m2!1spt-BR!2sbr!4v1700000000000"
+              loading="lazy"
+            ></iframe>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+      <div class="container">
+        <div class="brand" style="justify-content: center; margin-bottom: 15px">
+          <span class="brand-name">Império Frutas & Cia</span>
+        </div>
+        <p>
+          A banca da saúde. Frutas frescas selecionadas para sua família em
+          Piraju.
+        </p>
+        <div class="footer-social">
+          <a
+            href="https://www.instagram.com/imper.iofrutas/"
+            target="_blank"
+            class="social-link"
+            aria-label="Instagram"
+            ><i class="fab fa-instagram"></i
+          ></a>
+          <a
+            href="https://wa.me/5514997947727"
+            target="_blank"
+            class="social-link whatsapp"
+            aria-label="WhatsApp"
+            ><i class="fab fa-whatsapp"></i
+          ></a>
+        </div>
+        <div style="margin-top: 25px; color: var(--border-subtle)">
+          &copy;
+          <script>
+            document.write(new Date().getFullYear());
+          </script>
+          Império Frutas. Todos os direitos reservados.
+        </div>
+      </div>
+    </footer>
+
+    <!-- TOASTS -->
+    <div id="toast-container"></div>
+
+    <!-- LÓGICA JAVASCRIPT -->
+    <script>
+      // Dados dos produtos
+      const produtos = [
+        {
+          id: 1,
+          name: "Goiaba",
+          price: 16.5,
+          type: "kg",
+          image: "goiaba.jpg",
+          category: "doces",
+        },
+        {
+          id: 2,
+          name: "Maracujá",
+          price: 13.9,
+          type: "kg",
+          image: "maracuja.jpg",
+          category: "citrus",
+        },
+        {
+          id: 3,
+          name: "Banana Prata",
+          price: 7.5,
+          type: "kg",
+          image: "banana-prata.jpg",
+          category: "dia-a-dia",
+        },
+        {
+          id: 4,
+          name: "Banana Nanica",
+          price: 6.75,
+          type: "kg",
+          image: "banana-nanica.jpg",
+          category: "dia-a-dia",
+        },
+        {
+          id: 5,
+          name: "Morango",
+          price: 12.5,
+          type: "tray",
+          image: "morango-bandeja.jpg",
+          category: "promocao",
+        },
+        {
+          id: 6,
+          name: "Pera Willian",
+          price: 22.9,
+          type: "kg",
+          image: "pera-willian.jpg",
+          category: "doces",
+        },
+        {
+          id: 7,
+          name: "Ameixa",
+          price: 16.9,
+          type: "kg",
+          image: "ameixa.jpg",
+          category: "doces",
+        },
+        {
+          id: 8,
+          name: "Abacaxi Pérola",
+          price: 14.9,
+          type: "unit",
+          image: "abacaxi-perola.jpg",
+          category: "citrus",
+        },
+        {
+          id: 9,
+          name: "Laranja Charmute",
+          price: 5.99,
+          type: "kg",
+          image: "laranja-charmute.jpg",
+          category: "citrus",
+        },
+        {
+          id: 10,
+          name: "Laranja Pera Rio",
+          price: 4.99,
+          type: "kg",
+          image: "laranja-pera-rio.jpg",
+          category: "citrus",
+        },
+        {
+          id: 11,
+          name: "Uva Itália",
+          price: 21.99,
+          type: "kg",
+          image: "uvas-italia.jpg",
+          category: "doces",
+        },
+        {
+          id: 12,
+          name: "Uva Brasil",
+          price: 19.9,
+          type: "kg",
+          image: "uvas-brasil.jpg",
+          category: "doces",
+        },
+        {
+          id: 13,
+          name: "Uva sem semente",
+          price: 14.99,
+          type: "tray",
+          image: "uvas-sem-semente-caixinha.jpg",
+          category: "doces",
+        },
+        {
+          id: 14,
+          name: "Mamão Papaia",
+          price: 12.9,
+          type: "kg",
+          image: "mamao-papaia.jpg",
+          category: "dia-a-dia",
+        },
+        {
+          id: 15,
+          name: "Melão Amarelo",
+          price: 6.9,
+          type: "kg",
+          image: "melao-amarelo.jpg",
+          category: "dia-a-dia",
+        },
+        {
+          id: 16,
+          name: "Melão Rei",
+          price: 17.9,
+          type: "kg",
+          image: "melao-rei.jpg",
+          category: "dia-a-dia",
+        },
+        {
+          id: 17,
+          name: "Manga Tommy",
+          price: 6.8,
+          type: "kg",
+          image: "manga-tommy.jpg",
+          category: "doces",
+        },
+        {
+          id: 18,
+          name: "Manga Palmer",
+          price: 8.9,
+          type: "kg",
+          image: "manga-palmer.jpg",
+          category: "doces",
+        },
+        {
+          id: 19,
+          name: "Maçã Argentina",
+          price: 24.9,
+          type: "kg",
+          image: "maca-argentina.jpg",
+          category: "dia-a-dia",
+        },
+        {
+          id: 20,
+          name: "Maçã Gala",
+          price: 12.9,
+          type: "kg",
+          image: "maca-gala.jpg",
+          category: "dia-a-dia",
+        },
+        {
+          id: 21,
+          name: "Laranja Cara Cara",
+          price: 16.7,
+          type: "kg",
+          image: "laranja-cara-cara.jpg",
+          category: "citrus",
+        },
+        {
+          id: 22,
+          name: "Limão Taiti",
+          price: 4.99,
+          type: "kg",
+          image: "limao-taiti.jpg",
+          category: "citrus",
+        },
+        {
+          id: 23,
+          name: "Pitaya Vermelha",
+          price: 14.99,
+          type: "kg",
+          image: "pitaya-vermelha.jpg",
+          category: "promocao",
+        },
+        {
+          id: 24,
+          name: "Atemoia",
+          price: 27.9,
+          type: "kg",
+          image: "atemoia.jpg",
+          category: "doces",
+        },
+        {
+          id: 25,
+          name: "Melancia",
+          type: "fraction",
+          image: "melancia.jpg",
+          category: "dia-a-dia",
+          options: [
+            { label: "Inteira", price: 50 },
+            { label: "Meia", price: 25 },
+            { label: "1/4", price: 15 },
+          ],
+        },
+      ];
+
+      let cart = JSON.parse(localStorage.getItem("imperio_cart")) || [];
+      const TAXA_ENTREGA = 3.0;
+
+      const typeConfig = {
+        kg: {
+          label: "/kg",
+          badge: "Por Kg",
+          step: "0.1",
+          min: "0.1",
+          suffix: "kg",
+        },
+        unit: {
+          label: "/un",
+          badge: "Por Unid",
+          step: "1",
+          min: "1",
+          suffix: " un",
+        },
+        tray: {
+          label: "/bdj",
+          badge: "Bandeja",
+          step: "1",
+          min: "1",
+          suffix: " bandejas",
+        },
+        fraction: { badge: "Fatiada", suffix: " un" },
+      };
+
+      const formatCurrency = (value) =>
+        new Intl.NumberFormat("pt-BR", {
+          style: "currency",
+          currency: "BRL",
+        }).format(value);
+
+      function showToast(message, icon = "fa-check-circle") {
+        const container = document.getElementById("toast-container");
+        if (!container) return;
+        const toast = document.createElement("div");
+        toast.className = "toast";
+        toast.innerHTML = `<i class="fas ${icon}"></i> ${message}`;
+        container.appendChild(toast);
+        setTimeout(() => {
+          toast.remove();
+        }, 3000);
+      }
+
+      // --- SISTEMA DE TEMA (CLARO/ESCURO) ---
+      function toggleTheme() {
+        const html = document.documentElement;
+        const themeIcon = document.getElementById("theme-icon");
+
+        if (html.getAttribute("data-theme") === "light") {
+          html.removeAttribute("data-theme");
+          if (themeIcon) themeIcon.className = "fas fa-moon";
+          localStorage.setItem("theme", "dark");
+        } else {
+          html.setAttribute("data-theme", "light");
+          if (themeIcon) themeIcon.className = "fas fa-sun";
+          localStorage.setItem("theme", "light");
+        }
+      }
+
+      const savedTheme = localStorage.getItem("theme");
+      if (savedTheme === "light") {
+        document.documentElement.setAttribute("data-theme", "light");
+        document.addEventListener("DOMContentLoaded", () => {
+          const icon = document.getElementById("theme-icon");
+          if (icon) icon.className = "fas fa-sun";
+        });
+      }
+
+      // --- LÓGICA DE PRODUTOS E CARRINHO ---
+
+      let currentCategory = "todos";
+      let searchQuery = "";
+
+      function setFilter(category, btnElement) {
+        currentCategory = category;
+        document
+          .querySelectorAll(".filter-btn")
+          .forEach((btn) => btn.classList.remove("active"));
+        if (btnElement) btnElement.classList.add("active");
+        renderProducts();
+      }
+
+      function handleSearch() {
+        const searchInput = document.getElementById("search-input");
+        searchQuery = searchInput ? searchInput.value.toLowerCase() : "";
+        renderProducts();
+      }
+
+      function changeQty(prodId, delta) {
+        const input = document.getElementById(`input-${prodId}`);
+        if (!input) return;
+
+        const step = parseFloat(input.step) || 1;
+        const min = parseFloat(input.min) || step;
+        let val = parseFloat(input.value) || 0;
+
+        val += delta * step;
+        val = Math.round(val * 10) / 10;
+
+        if (val < min) val = min;
+        input.value = val;
+
+        updateDynamicPrice(prodId);
+      }
+
+      // Função para selecionar fatia via Segmented Control
+      function selectFraction(prodId, optionIndex, btnElement) {
+        const container = btnElement.parentElement;
+        const hiddenInput = document.getElementById(`input-${prodId}`);
+        if (!hiddenInput) return;
+
+        // Atualiza o input oculto
+        hiddenInput.value = optionIndex;
+
+        // Atualiza classe visual nos botões (pílulas)
+        container
+          .querySelectorAll(".fraction-btn")
+          .forEach((btn) => btn.classList.remove("active"));
+        btnElement.classList.add("active");
+
+        // Recalcula valor
+        updateDynamicPrice(prodId);
+      }
+
+      function updateDynamicPrice(productId) {
+        const prod = produtos.find((p) => p.id === productId);
+        const inputElement = document.getElementById(`input-${productId}`);
+        const displayElement = document.getElementById(
+          `dynamic-price-${productId}`,
+        );
+
+        if (!prod || !inputElement || !displayElement) return;
+
+        if (prod.type === "fraction") {
+          const optIndex = inputElement.value || 0;
+          displayElement.innerHTML = `Média: <strong>${formatCurrency(prod.options[optIndex].price)}</strong>`;
+        } else {
+          let qty = parseFloat(inputElement.value);
+          if (isNaN(qty) || qty < 0) qty = 0;
+          displayElement.innerHTML = `Total: <strong>${formatCurrency(prod.price * qty)}</strong>`;
+        }
+      }
+
+      function renderProducts() {
+        const grid = document.getElementById("product-grid");
+        if (!grid) return;
+        grid.innerHTML = "";
+
+        const filteredProducts = produtos.filter((prod) => {
+          const matchCategory =
+            currentCategory === "todos" || prod.category === currentCategory;
+          const matchSearch = prod.name.toLowerCase().includes(searchQuery);
+          return matchCategory && matchSearch;
+        });
+
+        if (filteredProducts.length === 0) {
+          grid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 2rem; color: var(--text-muted);"><i class="fas fa-search" style="font-size: 2rem; margin-bottom: 10px; opacity: 0.5;"></i><p>Nenhuma fruta encontrada para esta busca.</p></div>`;
+          return;
+        }
+
+        filteredProducts.forEach((prod) => {
+          const config = typeConfig[prod.type];
+          const card = document.createElement("div");
+          card.className = "pcard fade-in-up";
+
+          let priceDisplay = "";
+          let controlsHTML = "";
+
+          if (prod.type === "fraction") {
+            priceDisplay = `<span style="font-size: 0.9rem;">Opções de corte</span>`;
+
+            // Design renovado em Segmented Control (Pílulas)
+            let buttonsHTML = prod.options
+              .map(
+                (opt, index) =>
+                  `<div class="fraction-btn ${index === 0 ? "active" : ""}" onclick="selectFraction(${prod.id}, ${index}, this)">${opt.label}</div>`,
+              )
+              .join("");
+
+            controlsHTML = `
+                        <div class="fraction-selector">
+                            ${buttonsHTML}
+                        </div>
+                        <input type="hidden" id="input-${prod.id}" value="0">
+                    `;
+          } else {
+            priceDisplay = `${formatCurrency(prod.price)} <small>${config.label}</small>`;
+
+            controlsHTML = `
+                        <div class="qty-control">
+                            <button class="qty-btn" onclick="changeQty(${prod.id}, -1)">-</button>
+                            <input type="number" class="qty-input" id="input-${prod.id}" step="${config.step}" min="${config.min}" value="${config.min}" readonly>
+                            <button class="qty-btn" onclick="changeQty(${prod.id}, 1)">+</button>
+                        </div>
+                    `;
+          }
+
+          const imagePath = `assets/img/${prod.image}`;
+
+          card.innerHTML = `
+                    <div class="promo-badge">${config.badge}</div>
+                    <div class="photo-container">
+                        <img src="${imagePath}" alt="${prod.name}" class="pimg" onerror="this.src='https://placehold.co/400x300/e8f5e9/1E7D32?text=Fruta'">
+                    </div>
+                    <div class="pname">${prod.name}</div>
+                    
+                    <div class="price-stack">
+                        <div class="price">${priceDisplay}</div>
+                        <div id="dynamic-price-${prod.id}" class="dynamic-price-tag">Calculando...</div>
+                    </div>
+                    
+                    ${controlsHTML}
+                    
+                    <button class="btn-add pulse-hover" onclick="addToCart(${prod.id})" aria-label="Adicionar ${prod.name}">
+                        <i class="fas fa-plus"></i> Adicionar
+                    </button>
+                `;
+          grid.appendChild(card);
+          setTimeout(() => updateDynamicPrice(prod.id), 0);
+        });
+      }
+
+      function addToCart(productId) {
+        const product = produtos.find((p) => p.id === productId);
+        const inputElement = document.getElementById(`input-${productId}`);
+        if (!product || !inputElement) return;
+
+        let quantity,
+          price,
+          labelSuffix = "",
+          subtotal;
+
+        if (product.type === "fraction") {
+          const selectedOptionIndex = parseInt(inputElement.value) || 0;
+          const selectedOption = product.options[selectedOptionIndex];
+          quantity = 1;
+          price = selectedOption.price;
+          labelSuffix = ` (${selectedOption.label})`;
+          subtotal = price;
+        } else {
+          quantity = parseFloat(inputElement.value);
+          if (isNaN(quantity) || quantity <= 0) {
+            showToast("Quantidade inválida!", "fa-exclamation-triangle");
+            inputElement.value = typeConfig[product.type].min;
+            updateDynamicPrice(productId);
+            return;
+          }
+          price = product.price;
+          subtotal = price * quantity;
+        }
+
+        const cartItemName = product.name + labelSuffix;
+        const existingIndex = cart.findIndex(
+          (item) => item.name === cartItemName && item.type === product.type,
+        );
+
+        if (existingIndex > -1 && product.type !== "fraction") {
+          cart[existingIndex].quantity += quantity;
+          cart[existingIndex].subtotal =
+            cart[existingIndex].quantity * cart[existingIndex].price;
+        } else {
+          cart.push({
+            id: product.id,
+            name: cartItemName,
+            type: product.type,
+            quantity: quantity,
+            price: price,
+            subtotal: subtotal,
+          });
+        }
+
+        // Reseta input após adicionar
+        if (product.type !== "fraction") {
+          inputElement.value = typeConfig[product.type].min;
+          updateDynamicPrice(productId);
+        }
+
+        saveCart();
+        updateUI();
+        showToast(`${cartItemName} adicionado!`);
+
+        const headerBadge = document.getElementById("header-cart-count");
+        if (headerBadge) {
+          headerBadge.style.animation = "none";
+          headerBadge.offsetHeight;
+          headerBadge.style.animation = "badgePop 0.4s var(--ease-spring)";
+        }
+      }
+
+      function removeFromCart(index) {
+        cart.splice(index, 1);
+        saveCart();
+        updateUI();
+      }
+
+      function saveCart() {
+        localStorage.setItem("imperio_cart", JSON.stringify(cart));
+      }
+
+      function updateUI() {
+        const cartCount = document.getElementById("header-cart-count");
+        const cartTotal = document.getElementById("cart-total");
+        const cartSubtotal = document.getElementById("cart-subtotal");
+        const cartItemsContainer = document.getElementById("cart-items");
+
+        let subtotal = 0;
+        if (cartItemsContainer) cartItemsContainer.innerHTML = "";
+
+        if (cart.length === 0 && cartItemsContainer) {
+          cartItemsContainer.innerHTML = `
+                    <div style="text-align:center; padding: 2rem; color:var(--text-muted);">
+                        <i class="fas fa-box-open" style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.5;"></i>
+                        <p>O seu carrinho está vazio.</p>
+                    </div>`;
+        }
+
+        cart.forEach((item, index) => {
+          subtotal += item.subtotal;
+          let qtyLabel = item.quantity + typeConfig[item.type].suffix;
+          if (item.type === "fraction") qtyLabel = "1 un";
+
+          if (cartItemsContainer) {
+            const itemDiv = document.createElement("div");
+            itemDiv.className = "cart-item fade-in-up";
+            itemDiv.innerHTML = `
+                        <div style="flex:1">
+                            <div class="cart-item-title">${item.name}</div>
+                            <div class="cart-item-sub">${qtyLabel} x ${formatCurrency(item.price)} = <strong>${formatCurrency(item.subtotal)}</strong></div>
+                        </div>
+                        <button class="btn-remove pulse-hover" onclick="removeFromCart(${index})" title="Remover item">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    `;
+            cartItemsContainer.appendChild(itemDiv);
+          }
+        });
+
+        const totalFinal = cart.length > 0 ? subtotal + TAXA_ENTREGA : 0;
+
+        if (cartCount) cartCount.textContent = cart.length;
+        if (cartSubtotal) cartSubtotal.textContent = formatCurrency(subtotal);
+        if (cartTotal) cartTotal.textContent = formatCurrency(totalFinal);
+
+        calcularTrocoDinâmico(totalFinal);
+      }
+
+      // --- INTEGRAÇÃO VIACEP ---
+      function formatarCEP(input) {
+        let value = input.value.replace(/\D/g, "");
+        if (value.length > 5)
+          value = value.slice(0, 5) + "-" + value.slice(5, 8);
+        input.value = value;
+      }
+
+      async function buscarCEP() {
+        const cepInput = document.getElementById("cliente-cep");
+        const enderecoInput = document.getElementById("cliente-endereco");
+        if (!cepInput || !enderecoInput) return;
+
+        const cep = cepInput.value.replace(/\D/g, "");
+
+        if (cep.length === 8) {
+          try {
+            const response = await fetch(
+              `https://viacep.com.br/ws/${cep}/json/`,
+            );
+            const data = await response.json();
+            if (!data.erro) {
+              enderecoInput.value = `${data.logradouro}, Nº  - ${data.bairro}`;
+              enderecoInput.focus();
+              showToast("Endereço preenchido!", "fa-map-marker-alt");
+            }
+          } catch (error) {
+            console.error("Erro ao buscar CEP", error);
+          }
+        }
+      }
+
+      // --- PAGAMENTO E TROCO ---
+      function toggleTroco() {
+        const paymentElement = document.querySelector(
+          'input[name="pagamento"]:checked',
+        );
+        if (!paymentElement) return;
+
+        const paymentMethod = paymentElement.value;
+        const trocoContainer = document.getElementById("troco-container");
+        const valorInput = document.getElementById("valor-dinheiro");
+        const trocoMsg = document.getElementById("troco-calculado");
+
+        if (!trocoContainer || !valorInput || !trocoMsg) return;
+
+        if (paymentMethod === "Dinheiro") {
+          trocoContainer.style.display = "block";
+          trocoContainer.style.animation = "fadeInUp 0.3s var(--ease-spring)";
+          valorInput.focus();
+        } else {
+          trocoContainer.style.display = "none";
+          valorInput.value = "";
+          trocoMsg.innerHTML = "";
+        }
+      }
+
+      const valorDinheiroEl = document.getElementById("valor-dinheiro");
+      if (valorDinheiroEl) {
+        valorDinheiroEl.addEventListener("input", () => {
+          const subtotal = cart.reduce((acc, item) => acc + item.subtotal, 0);
+          const totalFinal = cart.length > 0 ? subtotal + TAXA_ENTREGA : 0;
+          calcularTrocoDinâmico(totalFinal);
+        });
+      }
+
+      function calcularTrocoDinâmico(total) {
+        const paymentMethodEl = document.querySelector(
+          'input[name="pagamento"]:checked',
+        );
+        if (paymentMethodEl && paymentMethodEl.value === "Dinheiro") {
+          const valorInputEl = document.getElementById("valor-dinheiro");
+          const trocoElement = document.getElementById("troco-calculado");
+
+          if (!valorInputEl || !trocoElement) return;
+
+          const valorInput = valorInputEl.value;
+          const valorDado = parseFloat(valorInput);
+
+          if (!valorInput) {
+            trocoElement.innerHTML = "";
+            return;
+          }
+
+          if (valorDado > total) {
+            const troco = valorDado - total;
+            trocoElement.innerHTML = `O seu troco: ${formatCurrency(troco)}`;
+            trocoElement.style.color = "var(--brand-gold)";
+          } else if (valorDado === total) {
+            trocoElement.innerHTML = "Valor exato. Não precisa de troco.";
+            trocoElement.style.color = "var(--brand-gold)";
+          } else if (valorDado > 0 && valorDado < total) {
+            trocoElement.innerHTML = `Valor insuficiente! Faltam ${formatCurrency(total - valorDado)}`;
+            trocoElement.style.color = "var(--brand-danger)";
+          } else {
+            trocoElement.innerHTML = "Valor inválido";
+            trocoElement.style.color = "var(--brand-danger)";
+          }
+        }
+      }
+
+      // --- FINALIZAÇÃO NO WHATSAPP ---
+      function finalizarPedido() {
+        if (cart.length === 0) {
+          showToast(
+            "O seu carrinho está vazio! Adicione produtos.",
+            "fa-exclamation-circle",
+          );
+          window.location.href = "#catalogo";
+          return;
+        }
+
+        // Aceder em segurança aos elementos, para evitar falhas caso o HTML não esteja a carregar bem
+        const nomeInput = document.getElementById("cliente-nome");
+        const enderecoInput = document.getElementById("cliente-endereco");
+        const observacoesInput = document.getElementById("pedido-observacoes");
+        const pagamentoElement = document.querySelector(
+          'input[name="pagamento"]:checked',
+        );
+
+        const nome = nomeInput ? nomeInput.value.trim() : "";
+        const endereco = enderecoInput ? enderecoInput.value.trim() : "";
+        const observacoes = observacoesInput
+          ? observacoesInput.value.trim()
+          : "";
+        const pagamento = pagamentoElement
+          ? pagamentoElement.value
+          : "Não informado";
+
+        if (!nome || !endereco) {
+          showToast("Por favor, preencha o nome e o endereço.", "fa-user-edit");
+          if (nomeInput && !nome) nomeInput.focus();
+          else if (enderecoInput && !endereco) enderecoInput.focus();
+          return;
+        }
+
+        const subtotal = cart.reduce((acc, item) => acc + item.subtotal, 0);
+        const total = subtotal + TAXA_ENTREGA;
+
+        let mensagem = `*================================*\n`;
+        mensagem += `🌟 *IMPÉRIO FRUTAS & CIA* 🌟\n`;
+        mensagem += `*================================*\n`;
+        mensagem += `*NOVO PEDIDO ONLINE* 🛵💨\n\n`;
+
+        mensagem += `👤 *Cliente:* ${nome}\n`;
+        mensagem += `📍 *Endereço:* ${endereco}\n`;
+        mensagem += `----------------------------------\n`;
+        mensagem += `🛒 *RESUMO DO PEDIDO:*\n\n`;
+
+        cart.forEach((item) => {
+          let suffix = typeConfig[item.type].suffix;
+          if (item.type === "fraction") suffix = " un";
+          mensagem += `🔹 *${item.quantity}${suffix}* x ${item.name}\n`;
+          mensagem += `   ↳ Subtotal: ${formatCurrency(item.subtotal)}\n`;
+        });
+
+        mensagem += `----------------------------------\n`;
+        mensagem += `📝 *Subtotal dos itens:* ${formatCurrency(subtotal)}\n`;
+        mensagem += `🛵 *Taxa de Entrega:* ${formatCurrency(TAXA_ENTREGA)}\n`;
+        mensagem += `----------------------------------\n`;
+        mensagem += `💰 *TOTAL A PAGAR: ${formatCurrency(total)}*\n`;
+        mensagem += `----------------------------------\n\n`;
+
+        mensagem += `💳 *FORMA DE PAGAMENTO:*\n`;
+        mensagem += `▪️ ${pagamento}\n`;
+
+        if (pagamento === "Dinheiro") {
+          const valorDinheiroEl = document.getElementById("valor-dinheiro");
+          const valorDado = valorDinheiroEl
+            ? parseFloat(valorDinheiroEl.value)
+            : 0;
+
+          if (isNaN(valorDado) || valorDado < total) {
+            showToast(
+              "Verifique o valor em dinheiro informado!",
+              "fa-money-bill-wave",
+            );
+            if (valorDinheiroEl) valorDinheiroEl.focus();
+            return;
+          }
+
+          const troco = valorDado - total;
+          mensagem += `💵 *Vai pagar com:* ${formatCurrency(valorDado)}\n`;
+          if (troco > 0) {
+            mensagem += `🪙 *Troco para:* ${formatCurrency(troco)}\n`;
+          } else {
+            mensagem += `🪙 *(Valor Exato, Sem Troco)*\n`;
+          }
+        }
+
+        if (observacoes) {
+          mensagem += `\n🗣️ *OBSERVAÇÕES:*\n${observacoes}\n`;
+        }
+
+        mensagem += `\n_Aguardando confirmação do pedido!_ 🙏✨`;
+
+        const telefone = "5514997947727";
+        const link = `https://wa.me/${telefone}?text=${encodeURIComponent(mensagem)}`;
+
+        window.open(link, "_blank");
+
+        // Limpeza pós-envio
+        cart = [];
+        saveCart();
+        updateUI();
+
+        if (nomeInput) nomeInput.value = "";
+        if (enderecoInput) enderecoInput.value = "";
+        if (observacoesInput) observacoesInput.value = "";
+
+        const cepInput = document.getElementById("cliente-cep");
+        if (cepInput) cepInput.value = "";
+
+        const valorDinheiroEl = document.getElementById("valor-dinheiro");
+        if (valorDinheiroEl) valorDinheiroEl.value = "";
+
+        showToast("Redirecionando para o WhatsApp...", "fa-paper-plane");
+      }
+
+      // --- HORÁRIO DE FUNCIONAMENTO ---
+      function checkStoreStatus() {
+        const now = new Date();
+        const day = now.getDay(); // 0 é Domingo
+        const hour = now.getHours();
+
+        // Aberto de Segunda a Sábado, das 08h às 19h
+        let isOpen = true;
+        if (day === 0) {
+          isOpen = false;
+        } else if (hour < 8 || hour >= 19) {
+          isOpen = false;
+        }
+
+        const banner = document.getElementById("store-status-banner");
+        if (!isOpen && banner) {
+          banner.style.display = "block";
+        }
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+        checkStoreStatus();
+        renderProducts();
+        updateUI();
+      });
+    </script>
+  </body>
+</html>
