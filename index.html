@@ -15,7 +15,7 @@
 
     <style>
       /* ==========================================================================
-           1) DESIGN TOKENS (Baseados no theme.css fornecido)
+           1) DESIGN TOKENS (Premium Dark Green Original)
         ========================================================================== */
       @import url("https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap");
 
@@ -182,7 +182,7 @@
         text-align: center;
       }
 
-      /* NOVO: Filtros, Pesquisa e Banner de Loja Fechada */
+      /* Filtros, Pesquisa e Banner de Loja Fechada */
       .store-status-banner {
         background: var(--brand-danger);
         color: white;
@@ -679,7 +679,6 @@
         line-height: 1.1;
       }
 
-      /* Estilo melhorado para o preço dinâmico (legibilidade em ambos os temas) */
       .dynamic-price-tag {
         font-size: 0.95rem;
         font-weight: 800;
@@ -688,10 +687,6 @@
         text-align: center;
         width: 100%;
         transition: all 0.3s ease;
-      }
-
-      /* Tema Escuro (Padrão) */
-      .dynamic-price-tag {
         background: rgba(0, 0, 0, 0.4);
         color: #ffffff;
         border: 1px solid rgba(255, 255, 255, 0.1);
@@ -700,8 +695,6 @@
         color: var(--brand-gold);
         font-weight: 900;
       }
-
-      /* Tema Claro */
       [data-theme="light"] .dynamic-price-tag {
         background: #e8f5e9;
         color: #000000;
@@ -711,7 +704,7 @@
         color: var(--brand-green-hover);
       }
 
-      /* Controlo de Quantidade Estilizado (Botões +/-) */
+      /* Controlo de Quantidade Estilizado */
       .qty-control {
         display: flex;
         align-items: center;
@@ -760,7 +753,6 @@
         outline: none;
       }
 
-      /* NOVO: Seleção em formato de Pílulas (Fatias) */
       .fraction-selector {
         display: flex;
         gap: 6px;
@@ -939,6 +931,7 @@
       }
       input[type="text"],
       input[type="number"],
+      input[type="tel"],
       textarea {
         width: 100%;
         min-height: 48px;
@@ -1057,77 +1050,139 @@
       }
 
       /* ==========================================================================
-           9) MAPA E FOOTER
+           9) MAPA E FOOTER (REFORMULADO)
         ========================================================================== */
+      .section-map {
+        padding: 5rem 0;
+        position: relative;
+      }
+
       .map-card {
         display: grid;
         grid-template-columns: 1fr;
-        gap: 28px;
-        padding: 28px;
-        border-radius: 22px;
+        gap: 30px;
+        padding: 35px;
+        border-radius: 24px;
         border: 1px solid var(--border-subtle);
         background: var(--bg-surface);
         box-shadow: var(--shadow-float);
         overflow: hidden;
+        position: relative;
+        backdrop-filter: blur(12px);
       }
+      /* Top border glow para o mapa */
+      .map-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(
+          90deg,
+          var(--brand-gold),
+          var(--brand-green-action)
+        );
+      }
+
       @media (min-width: 980px) {
         .map-card {
-          grid-template-columns: 1.05fr 1fr;
+          grid-template-columns: 1fr 1.2fr;
+          align-items: center;
         }
       }
 
       .map-info h3 {
-        color: var(--text-main);
-        font-size: 2rem;
-        margin-bottom: 20px;
+        font-size: 2.2rem;
+        margin-bottom: 10px;
         font-weight: 900;
+        background: linear-gradient(90deg, #fff, var(--brand-gold));
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
       }
+      .map-info p {
+        color: var(--text-muted);
+        font-size: 1.05rem;
+        margin-bottom: 25px;
+        line-height: 1.5;
+      }
+
       .map-item {
-        display: grid;
-        grid-template-columns: 28px 1fr;
-        gap: 12px;
+        display: flex;
+        align-items: center;
+        gap: 16px;
         padding: 16px;
         border-radius: 16px;
-        border: 1px solid rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.05);
         background: var(--bg-input-dark);
         margin-bottom: 12px;
+        transition:
+          transform 0.2s ease,
+          border-color 0.2s ease;
+      }
+      .map-item:hover {
+        transform: translateX(5px);
+        border-color: var(--brand-gold);
       }
       .map-item i {
+        width: 44px;
+        height: 44px;
+        border-radius: 12px;
+        background: rgba(244, 195, 0, 0.1);
         color: var(--brand-gold);
+        display: grid;
+        place-items: center;
         font-size: 1.3rem;
-        margin-top: 2px;
       }
-      .map-item strong {
+      .map-item-content {
+        flex: 1;
+      }
+      .map-item-content strong {
         display: block;
         color: var(--text-main);
         font-size: 1.1rem;
-        margin-bottom: 4px;
+        margin-bottom: 2px;
       }
-      .map-item span {
+      .map-item-content span {
         color: var(--text-muted);
-        font-weight: 700;
+        font-size: 0.95rem;
+        line-height: 1.3;
+        display: inline-block;
       }
 
       .map-embed {
         width: 100%;
-        min-height: 360px;
+        height: 100%;
+        min-height: 400px;
         border-radius: 18px;
         overflow: hidden;
-        border: 1px solid rgba(255, 255, 255, 0.1);
+        border: 2px solid rgba(255, 255, 255, 0.08);
         box-shadow: var(--shadow-sm);
+        position: relative;
       }
       .map-embed iframe {
         width: 100%;
         height: 100%;
         border: none;
         display: block;
+        filter: contrast(1.05) saturation(1.1);
+      }
+
+      .btn-map {
+        width: 100%;
+        margin-top: 15px;
+        padding: 16px;
+        border-radius: 14px;
+        font-size: 1.1rem;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
       }
 
       .footer {
         text-align: center;
         padding: 40px 0;
         border-top: 1px solid var(--border-subtle);
-        margin-top: 40px;
+        margin-top: 20px;
       }
       .footer-social {
         display: flex;
@@ -1485,6 +1540,18 @@
               />
             </div>
 
+            <!-- Campo Telefone -->
+            <div class="form-group">
+              <input
+                type="tel"
+                id="cliente-telefone"
+                placeholder="Seu Telefone / WhatsApp"
+                maxlength="15"
+                oninput="formatarTelefone(this)"
+                required
+              />
+            </div>
+
             <!-- Busca CEP Automática -->
             <div class="form-group cep-group">
               <input
@@ -1598,49 +1665,61 @@
       </div>
     </section>
 
-    <!-- MAPA -->
-    <section id="mapa" class="container" style="padding: 4rem 20px">
-      <h2 class="section-title">Nossa Banca</h2>
-      <div class="map-card">
-        <div class="map-info">
-          <h3>Império Frutas & Cia</h3>
-          <div class="map-item">
-            <i class="fas fa-map-marker-alt"></i>
-            <div>
-              <strong>Localização</strong>
-              <span>Rua João Grego, 287 - Piraju, SP</span>
+    <!-- MAPA (REFORMULADO) -->
+    <section id="mapa" class="section-map">
+      <div class="container">
+        <h2 class="section-title text-gradient">Nossa Banca</h2>
+
+        <div class="map-card fade-in-up">
+          <div class="map-info">
+            <h3>Império Frutas & Cia</h3>
+            <p>
+              Venha nos visitar! Escolha as suas frutas pessoalmente com o mesmo
+              carinho e qualidade de sempre.
+            </p>
+
+            <div class="map-item">
+              <i class="fas fa-map-marker-alt"></i>
+              <div class="map-item-content">
+                <strong>Localização</strong>
+                <span>Rua João Grego, 287 - Piraju, SP</span>
+              </div>
             </div>
-          </div>
-          <div class="map-item">
-            <i class="fas fa-clock"></i>
-            <div>
-              <strong>Horário</strong>
-              <span>Segunda a Sábado - Horário Comercial</span>
+
+            <div class="map-item">
+              <i class="fas fa-clock"></i>
+              <div class="map-item-content">
+                <strong>Horário de Funcionamento</strong>
+                <span>Segunda a Sábado<br />10:00 às 19:00</span>
+              </div>
             </div>
-          </div>
-          <div class="map-item">
-            <i class="fab fa-whatsapp"></i>
-            <div>
-              <strong>Contacto</strong>
-              <span>+55 14 99794-7727</span>
+
+            <div class="map-item">
+              <i class="fab fa-whatsapp"></i>
+              <div class="map-item-content">
+                <strong>Contato / WhatsApp</strong>
+                <span>+55 14 99794-7727</span>
+              </div>
             </div>
+
+            <a
+              href="https://maps.google.com/?q=Rua+João+Grego,+287+-+Piraju,+SP"
+              target="_blank"
+              class="btn btn-primary btn-map pulse-hover"
+            >
+              <i class="fas fa-directions"></i> Como Chegar
+            </a>
           </div>
-          <a
-            href="https://maps.google.com/?q=Rua+João+Grego,+287+-+Piraju,+SP"
-            target="_blank"
-            class="btn btn-primary"
-            style="margin-top: 15px; width: fit-content"
-          >
-            <i class="fas fa-directions"></i> Traçar Rota
-          </a>
-        </div>
-        <div class="map-media">
-          <div class="map-embed">
-            <iframe
-              title="Mapa - Império Frutas"
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3664.721471415752!2d-49.3876024!3d-23.1906941!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x94c039785006b53b%3A0xc3f8e5f8f5f8f5f8!2sRua%20Jo%C3%A3o%20Grego%2C%20287!5e0!3m2!1spt-BR!2sbr!4v1700000000000"
-              loading="lazy"
-            ></iframe>
+
+          <div class="map-media">
+            <div class="map-embed">
+              <iframe
+                title="Mapa - Império Frutas"
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3664.721471415752!2d-49.3876024!3d-23.1906941!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x94c039785006b53b%3A0xc3f8e5f8f5f8f5f8!2sRua%20Jo%C3%A3o%20Grego%2C%20287!5e0!3m2!1spt-BR!2sbr!4v1700000000000"
+                loading="lazy"
+                allowfullscreen
+              ></iframe>
+            </div>
           </div>
         </div>
       </div>
@@ -2244,11 +2323,23 @@
         calcularTrocoDinâmico(totalFinal);
       }
 
-      // --- INTEGRAÇÃO VIACEP ---
+      // --- MÁSCARAS E FORMATAÇÃO ---
       function formatarCEP(input) {
         let value = input.value.replace(/\D/g, "");
         if (value.length > 5)
           value = value.slice(0, 5) + "-" + value.slice(5, 8);
+        input.value = value;
+      }
+
+      function formatarTelefone(input) {
+        let value = input.value.replace(/\D/g, "");
+        if (value.length > 11) value = value.slice(0, 11);
+        if (value.length > 2) {
+          value = "(" + value.substring(0, 2) + ") " + value.substring(2);
+        }
+        if (value.length > 10) {
+          value = value.substring(0, 10) + "-" + value.substring(10);
+        }
         input.value = value;
       }
 
@@ -2358,6 +2449,7 @@
 
         // Aceder em segurança aos elementos, para evitar falhas caso o HTML não esteja a carregar bem
         const nomeInput = document.getElementById("cliente-nome");
+        const telefoneInput = document.getElementById("cliente-telefone");
         const enderecoInput = document.getElementById("cliente-endereco");
         const observacoesInput = document.getElementById("pedido-observacoes");
         const pagamentoElement = document.querySelector(
@@ -2365,6 +2457,7 @@
         );
 
         const nome = nomeInput ? nomeInput.value.trim() : "";
+        const telefone = telefoneInput ? telefoneInput.value.trim() : "";
         const endereco = enderecoInput ? enderecoInput.value.trim() : "";
         const observacoes = observacoesInput
           ? observacoesInput.value.trim()
@@ -2373,9 +2466,13 @@
           ? pagamentoElement.value
           : "Não informado";
 
-        if (!nome || !endereco) {
-          showToast("Por favor, preencha o nome e o endereço.", "fa-user-edit");
+        if (!nome || !telefone || !endereco) {
+          showToast(
+            "Por favor, preencha nome, telefone e endereço.",
+            "fa-user-edit",
+          );
           if (nomeInput && !nome) nomeInput.focus();
+          else if (telefoneInput && !telefone) telefoneInput.focus();
           else if (enderecoInput && !endereco) enderecoInput.focus();
           return;
         }
@@ -2383,32 +2480,44 @@
         const subtotal = cart.reduce((acc, item) => acc + item.subtotal, 0);
         const total = subtotal + TAXA_ENTREGA;
 
-        let mensagem = `*================================*\n`;
-        mensagem += `🌟 *IMPÉRIO FRUTAS & CIA* 🌟\n`;
-        mensagem += `*================================*\n`;
-        mensagem += `*NOVO PEDIDO ONLINE* 🛵💨\n\n`;
+        const horaAtual = new Date().getHours();
+        let saudacao = "Boa noite";
+        if (horaAtual >= 5 && horaAtual < 12) saudacao = "Bom dia";
+        else if (horaAtual >= 12 && horaAtual < 18) saudacao = "Boa tarde";
 
+        let mensagem = `👑 *IMPÉRIO FRUTAS & CIA* 👑\n`;
+        mensagem += `_A sua banca da saúde_ 🍎🍌🍉\n`;
+        mensagem += `➖➖➖➖➖➖➖➖➖➖➖➖\n\n`;
+
+        mensagem += `👋 *${saudacao}!* Aqui está o meu pedido:\n\n`;
+
+        mensagem += `🧾 *DADOS DA ENTREGA* 🛵💨\n`;
         mensagem += `👤 *Cliente:* ${nome}\n`;
+        mensagem += `📱 *Contato:* ${telefone}\n`;
         mensagem += `📍 *Endereço:* ${endereco}\n`;
-        mensagem += `----------------------------------\n`;
-        mensagem += `🛒 *RESUMO DO PEDIDO:*\n\n`;
+        mensagem += `➖➖➖➖➖➖➖➖➖➖➖➖\n\n`;
+
+        mensagem += `🛒 *ÍTENS DO PEDIDO:*\n`;
 
         cart.forEach((item) => {
           let suffix = typeConfig[item.type].suffix;
           if (item.type === "fraction") suffix = " un";
-          mensagem += `🔹 *${item.quantity}${suffix}* x ${item.name}\n`;
-          mensagem += `   ↳ Subtotal: ${formatCurrency(item.subtotal)}\n`;
+          mensagem += `🔸 *${item.quantity}${suffix}* x ${item.name}\n`;
+          mensagem += `   ↳ 💵 ${formatCurrency(item.subtotal)}\n`;
         });
 
-        mensagem += `----------------------------------\n`;
-        mensagem += `📝 *Subtotal dos itens:* ${formatCurrency(subtotal)}\n`;
-        mensagem += `🛵 *Taxa de Entrega:* ${formatCurrency(TAXA_ENTREGA)}\n`;
-        mensagem += `----------------------------------\n`;
-        mensagem += `💰 *TOTAL A PAGAR: ${formatCurrency(total)}*\n`;
-        mensagem += `----------------------------------\n\n`;
+        mensagem += `\n➖➖➖➖➖➖➖➖➖➖➖➖\n`;
+        mensagem += `📊 *RESUMO DOS VALORES:*\n`;
+        mensagem += `📝 Subtotal: ${formatCurrency(subtotal)}\n`;
+        mensagem += `🛵 Taxa de Entrega: ${formatCurrency(TAXA_ENTREGA)}\n`;
+        mensagem += `💰 *TOTAL: ${formatCurrency(total)}*\n`;
+        mensagem += `➖➖➖➖➖➖➖➖➖➖➖➖\n\n`;
 
-        mensagem += `💳 *FORMA DE PAGAMENTO:*\n`;
-        mensagem += `▪️ ${pagamento}\n`;
+        mensagem += `💳 *PAGAMENTO:* `;
+        if (pagamento === "Pix") mensagem += `🟢 Pix\n`;
+        else if (pagamento === "Cartão")
+          mensagem += `🔵 Cartão (Levar maquininha)\n`;
+        else mensagem += `💵 Dinheiro\n`;
 
         if (pagamento === "Dinheiro") {
           const valorDinheiroEl = document.getElementById("valor-dinheiro");
@@ -2426,22 +2535,23 @@
           }
 
           const troco = valorDado - total;
-          mensagem += `💵 *Vai pagar com:* ${formatCurrency(valorDado)}\n`;
+          mensagem += `💸 *Pagamento em:* ${formatCurrency(valorDado)}\n`;
           if (troco > 0) {
-            mensagem += `🪙 *Troco para:* ${formatCurrency(troco)}\n`;
+            mensagem += `🪙 *Troco:* ${formatCurrency(troco)}\n`;
           } else {
             mensagem += `🪙 *(Valor Exato, Sem Troco)*\n`;
           }
         }
 
         if (observacoes) {
-          mensagem += `\n🗣️ *OBSERVAÇÕES:*\n${observacoes}\n`;
+          mensagem += `\n🗣️ *OBSERVAÇÕES:*\n_${observacoes}_\n`;
         }
 
-        mensagem += `\n_Aguardando confirmação do pedido!_ 🙏✨`;
+        mensagem += `\n➖➖➖➖➖➖➖➖➖➖➖➖\n`;
+        mensagem += `🙏 _Muito obrigado pela preferência! Aguardo a confirmação._ 💚`;
 
-        const telefone = "5514997947727";
-        const link = `https://wa.me/${telefone}?text=${encodeURIComponent(mensagem)}`;
+        const numeroLoja = "5514997947727";
+        const link = `https://wa.me/${numeroLoja}?text=${encodeURIComponent(mensagem)}`;
 
         window.open(link, "_blank");
 
@@ -2451,6 +2561,7 @@
         updateUI();
 
         if (nomeInput) nomeInput.value = "";
+        if (telefoneInput) telefoneInput.value = "";
         if (enderecoInput) enderecoInput.value = "";
         if (observacoesInput) observacoesInput.value = "";
 
@@ -2469,11 +2580,11 @@
         const day = now.getDay(); // 0 é Domingo
         const hour = now.getHours();
 
-        // Aberto de Segunda a Sábado, das 08h às 19h
+        // Aberto de Segunda a Sábado, das 10h às 19h
         let isOpen = true;
         if (day === 0) {
           isOpen = false;
-        } else if (hour < 8 || hour >= 19) {
+        } else if (hour < 10 || hour >= 19) {
           isOpen = false;
         }
 
