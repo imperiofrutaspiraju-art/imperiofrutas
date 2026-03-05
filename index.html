@@ -430,13 +430,21 @@
         position: relative;
         z-index: 1;
       }
+
+      /* Ajuste Dinâmico do Logotipo */
       .hero-img {
-        max-width: 600px;
+        width: 100%;
+        max-width: clamp(
+          280px,
+          80vw,
+          480px
+        ); /* Ajusta dinamicamente entre 280px e 480px baseado na tela */
         border-radius: 20px;
         box-shadow: var(--shadow-md);
         margin: 0 auto 20px;
         border: 3px solid var(--border-gold);
       }
+
       .hero-pin {
         color: var(--brand-danger);
         font-size: 0.9rem;
@@ -1313,7 +1321,7 @@
         <a href="#" class="brand">
           <div class="brand-mark">
             <img
-              src="assets/img/logo.jpg"
+              src="assets/img/logo.png"
               alt="Logo Império Frutas"
               onerror="
                 this.parentElement.classList.add('fallback');
@@ -1364,7 +1372,7 @@
         </div>
 
         <img
-          src="assets/img/logo.jpg"
+          src="assets/img/logo.png"
           alt="Império Frutas"
           class="hero-img"
           onerror="this.style.display = 'none'"
@@ -1697,7 +1705,7 @@
             <div class="map-item">
               <i class="fab fa-whatsapp"></i>
               <div class="map-item-content">
-                <strong>Contato / WhatsApp</strong>
+                <strong>Contacto / WhatsApp</strong>
                 <span>+55 14 99794-7727</span>
               </div>
             </div>
@@ -1775,6 +1783,7 @@
           type: "kg",
           image: "goiaba.jpg",
           category: "doces",
+          permiteUnidade: true,
         },
         {
           id: 2,
@@ -1783,6 +1792,7 @@
           type: "kg",
           image: "maracuja.jpg",
           category: "citrus",
+          permiteUnidade: true,
         },
         {
           id: 3,
@@ -1815,6 +1825,7 @@
           type: "kg",
           image: "pera-willian.jpg",
           category: "doces",
+          permiteUnidade: true,
         },
         {
           id: 7,
@@ -1875,10 +1886,11 @@
         {
           id: 14,
           name: "Mamão Papaia",
-          price: 12.9,
+          price: 13.9,
           type: "kg",
           image: "mamao-papaia.jpg",
           category: "dia-a-dia",
+          permiteUnidade: true,
         },
         {
           id: 15,
@@ -1887,6 +1899,7 @@
           type: "kg",
           image: "melao-amarelo.jpg",
           category: "dia-a-dia",
+          permiteUnidade: true,
         },
         {
           id: 16,
@@ -1895,6 +1908,7 @@
           type: "kg",
           image: "melao-rei.jpg",
           category: "dia-a-dia",
+          permiteUnidade: true,
         },
         {
           id: 17,
@@ -1903,6 +1917,7 @@
           type: "kg",
           image: "manga-tommy.jpg",
           category: "doces",
+          permiteUnidade: true,
         },
         {
           id: 18,
@@ -1911,6 +1926,7 @@
           type: "kg",
           image: "manga-palmer.jpg",
           category: "doces",
+          permiteUnidade: true,
         },
         {
           id: 19,
@@ -1919,14 +1935,16 @@
           type: "kg",
           image: "maca-argentina.jpg",
           category: "dia-a-dia",
+          permiteUnidade: true,
         },
         {
           id: 20,
           name: "Maçã Gala",
-          price: 12.9,
+          price: 9.9,
           type: "kg",
           image: "maca-gala.jpg",
           category: "dia-a-dia",
+          permiteUnidade: true,
         },
         {
           id: 21,
@@ -2101,12 +2119,46 @@
         updateDynamicPrice(prodId);
       }
 
+      // NOVO: Função para alternar entre Kg e Unidade
+      function setSellMode(prodId, mode) {
+        const btnKg = document.getElementById(`btn-mode-kg-${prodId}`);
+        const btnUn = document.getElementById(`btn-mode-un-${prodId}`);
+        if (btnKg && btnUn) {
+          btnKg.classList.remove("active");
+          btnUn.classList.remove("active");
+          if (mode === "kg") btnKg.classList.add("active");
+          else btnUn.classList.add("active");
+        }
+
+        const modeInput = document.getElementById(`mode-${prodId}`);
+        if (modeInput) modeInput.value = mode;
+
+        const qtyInput = document.getElementById(`input-${prodId}`);
+        if (qtyInput) {
+          if (mode === "unidade") {
+            qtyInput.step = "1";
+            qtyInput.min = "1";
+            qtyInput.value = Math.max(
+              1,
+              Math.ceil(parseFloat(qtyInput.value) || 1),
+            );
+          } else {
+            const prod = produtos.find((p) => p.id === prodId);
+            const config = typeConfig[prod.type];
+            qtyInput.step = config.step;
+            qtyInput.min = config.min;
+          }
+        }
+        updateDynamicPrice(prodId);
+      }
+
       function updateDynamicPrice(productId) {
         const prod = produtos.find((p) => p.id === productId);
         const inputElement = document.getElementById(`input-${productId}`);
         const displayElement = document.getElementById(
           `dynamic-price-${productId}`,
         );
+        const modeInput = document.getElementById(`mode-${productId}`);
 
         if (!prod || !inputElement || !displayElement) return;
 
@@ -2114,9 +2166,15 @@
           const optIndex = inputElement.value || 0;
           displayElement.innerHTML = `Média: <strong>${formatCurrency(prod.options[optIndex].price)}</strong>`;
         } else {
-          let qty = parseFloat(inputElement.value);
-          if (isNaN(qty) || qty < 0) qty = 0;
-          displayElement.innerHTML = `Total: <strong>${formatCurrency(prod.price * qty)}</strong>`;
+          const currentMode = modeInput ? modeInput.value : "kg";
+
+          if (currentMode === "unidade") {
+            displayElement.innerHTML = `Total: <strong>A calcular</strong>`;
+          } else {
+            let qty = parseFloat(inputElement.value);
+            if (isNaN(qty) || qty < 0) qty = 0;
+            displayElement.innerHTML = `Total: <strong>${formatCurrency(prod.price * qty)}</strong>`;
+          }
         }
       }
 
@@ -2165,7 +2223,19 @@
           } else {
             priceDisplay = `${formatCurrency(prod.price)} <small>${config.label}</small>`;
 
+            let modeToggleHTML = "";
+            if (prod.permiteUnidade) {
+              modeToggleHTML = `
+                            <div class="fraction-selector" style="margin-bottom: 8px;">
+                                <div class="fraction-btn active" id="btn-mode-kg-${prod.id}" onclick="setSellMode(${prod.id}, 'kg')">Por Kg</div>
+                                <div class="fraction-btn" id="btn-mode-un-${prod.id}" onclick="setSellMode(${prod.id}, 'unidade')">Por Unidade</div>
+                            </div>
+                            <input type="hidden" id="mode-${prod.id}" value="kg">
+                        `;
+            }
+
             controlsHTML = `
+                        ${modeToggleHTML}
                         <div class="qty-control">
                             <button class="qty-btn" onclick="changeQty(${prod.id}, -1)">-</button>
                             <input type="number" class="qty-input" id="input-${prod.id}" step="${config.step}" min="${config.min}" value="${config.min}" readonly>
@@ -2202,12 +2272,14 @@
       function addToCart(productId) {
         const product = produtos.find((p) => p.id === productId);
         const inputElement = document.getElementById(`input-${productId}`);
+        const modeInput = document.getElementById(`mode-${productId}`);
         if (!product || !inputElement) return;
 
         let quantity,
           price,
           labelSuffix = "",
           subtotal;
+        let sellingMode = product.type;
 
         if (product.type === "fraction") {
           const selectedOptionIndex = parseInt(inputElement.value) || 0;
@@ -2217,26 +2289,40 @@
           labelSuffix = ` (${selectedOption.label})`;
           subtotal = price;
         } else {
+          const currentMode = modeInput ? modeInput.value : "kg";
           quantity = parseFloat(inputElement.value);
+
           if (isNaN(quantity) || quantity <= 0) {
             showToast("Quantidade inválida!", "fa-exclamation-triangle");
             inputElement.value = typeConfig[product.type].min;
             updateDynamicPrice(productId);
             return;
           }
-          price = product.price;
-          subtotal = price * quantity;
+
+          if (currentMode === "unidade") {
+            price = 0;
+            subtotal = 0;
+            labelSuffix = " (Unid.)";
+            sellingMode = "unidade";
+          } else {
+            price = product.price;
+            subtotal = price * quantity;
+            sellingMode = "kg"; // explicitly mark it for grouping
+          }
         }
 
         const cartItemName = product.name + labelSuffix;
         const existingIndex = cart.findIndex(
-          (item) => item.name === cartItemName && item.type === product.type,
+          (item) =>
+            item.name === cartItemName && item.sellingMode === sellingMode,
         );
 
         if (existingIndex > -1 && product.type !== "fraction") {
           cart[existingIndex].quantity += quantity;
-          cart[existingIndex].subtotal =
-            cart[existingIndex].quantity * cart[existingIndex].price;
+          if (sellingMode !== "unidade") {
+            cart[existingIndex].subtotal =
+              cart[existingIndex].quantity * cart[existingIndex].price;
+          }
         } else {
           cart.push({
             id: product.id,
@@ -2245,12 +2331,17 @@
             quantity: quantity,
             price: price,
             subtotal: subtotal,
+            sellingMode: sellingMode,
           });
         }
 
         // Reseta input após adicionar
         if (product.type !== "fraction") {
-          inputElement.value = typeConfig[product.type].min;
+          if (modeInput && modeInput.value === "unidade") {
+            inputElement.value = "1";
+          } else {
+            inputElement.value = typeConfig[product.type].min;
+          }
           updateDynamicPrice(productId);
         }
 
@@ -2295,8 +2386,15 @@
 
         cart.forEach((item, index) => {
           subtotal += item.subtotal;
-          let qtyLabel = item.quantity + typeConfig[item.type].suffix;
-          if (item.type === "fraction") qtyLabel = "1 un";
+
+          let subInfoHTML = "";
+          if (item.sellingMode === "unidade") {
+            subInfoHTML = `${item.quantity} un = <strong style="color: var(--brand-gold);">A calcular</strong>`;
+          } else {
+            let qtyLabel = item.quantity + typeConfig[item.type].suffix;
+            if (item.type === "fraction") qtyLabel = "1 un";
+            subInfoHTML = `${qtyLabel} x ${formatCurrency(item.price)} = <strong>${formatCurrency(item.subtotal)}</strong>`;
+          }
 
           if (cartItemsContainer) {
             const itemDiv = document.createElement("div");
@@ -2304,7 +2402,7 @@
             itemDiv.innerHTML = `
                         <div style="flex:1">
                             <div class="cart-item-title">${item.name}</div>
-                            <div class="cart-item-sub">${qtyLabel} x ${formatCurrency(item.price)} = <strong>${formatCurrency(item.subtotal)}</strong></div>
+                            <div class="cart-item-sub">${subInfoHTML}</div>
                         </div>
                         <button class="btn-remove pulse-hover" onclick="removeFromCart(${index})" title="Remover item">
                             <i class="fas fa-trash-alt"></i>
@@ -2500,10 +2598,15 @@
         mensagem += `🛒 *ÍTENS DO PEDIDO:*\n`;
 
         cart.forEach((item) => {
-          let suffix = typeConfig[item.type].suffix;
-          if (item.type === "fraction") suffix = " un";
-          mensagem += `🔸 *${item.quantity}${suffix}* x ${item.name}\n`;
-          mensagem += `   ↳ 💵 ${formatCurrency(item.subtotal)}\n`;
+          if (item.sellingMode === "unidade") {
+            mensagem += `🔸 *${item.quantity} un* x ${item.name}\n`;
+            mensagem += `   ↳ ⚖️ _(${item.quantity} unidades - Valor a confirmar após pesagem)_\n`;
+          } else {
+            let suffix = typeConfig[item.type].suffix;
+            if (item.type === "fraction") suffix = " un";
+            mensagem += `🔸 *${item.quantity}${suffix}* x ${item.name}\n`;
+            mensagem += `   ↳ 💵 ${formatCurrency(item.subtotal)}\n`;
+          }
         });
 
         mensagem += `\n➖➖➖➖➖➖➖➖➖➖➖➖\n`;
