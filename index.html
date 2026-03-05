@@ -924,6 +924,25 @@
         color: var(--brand-gold);
       }
 
+      /* Estilo para a caixa de aviso de Unidades */
+      .aviso-unidades {
+        display: none;
+        margin-top: 15px;
+        padding: 12px 15px;
+        border-radius: 12px;
+        background: rgba(244, 195, 0, 0.1);
+        border: 1px solid var(--brand-gold);
+        color: var(--brand-gold);
+        font-size: 0.9rem;
+        line-height: 1.4;
+        animation: fadeInUp 0.4s var(--ease-spring);
+      }
+      [data-theme="light"] .aviso-unidades {
+        background: #fff8e1;
+        color: #d84315;
+        border-color: #ffca28;
+      }
+
       .checkout-form {
         padding: 2rem;
       }
@@ -1522,6 +1541,15 @@
                 >
                 <span>R$ 3,00</span>
               </div>
+
+              <!-- NOVO: Aviso de itens por unidade -->
+              <div id="aviso-unidades" class="aviso-unidades">
+                <i class="fas fa-balance-scale"></i> <strong>Atenção:</strong> O
+                seu pedido inclui frutas marcadas <em>"Por Unidade"</em>. O
+                valor exato delas será calculado após a pesagem. O nosso
+                atendente confirmará o total final consigo no WhatsApp!
+              </div>
+
               <div class="total-box" style="margin-top: 10px; padding: 15px">
                 <h2>TOTAL</h2>
                 <strong id="cart-total">R$ 0,00</strong>
@@ -1801,6 +1829,7 @@
           type: "kg",
           image: "banana-prata.jpg",
           category: "dia-a-dia",
+          permiteUnidade: true,
         },
         {
           id: 4,
@@ -1809,6 +1838,7 @@
           type: "kg",
           image: "banana-nanica.jpg",
           category: "dia-a-dia",
+          permiteUnidade: true,
         },
         {
           id: 5,
@@ -1834,6 +1864,7 @@
           type: "kg",
           image: "ameixa.jpg",
           category: "doces",
+          permiteUnidade: true,
         },
         {
           id: 8,
@@ -1850,6 +1881,7 @@
           type: "kg",
           image: "laranja-charmute.jpg",
           category: "citrus",
+          permiteUnidade: true,
         },
         {
           id: 10,
@@ -1858,6 +1890,7 @@
           type: "kg",
           image: "laranja-pera-rio.jpg",
           category: "citrus",
+          permiteUnidade: true,
         },
         {
           id: 11,
@@ -1886,7 +1919,7 @@
         {
           id: 14,
           name: "Mamão Papaia",
-          price: 13.9,
+          price: 12.9,
           type: "kg",
           image: "mamao-papaia.jpg",
           category: "dia-a-dia",
@@ -1940,7 +1973,7 @@
         {
           id: 20,
           name: "Maçã Gala",
-          price: 9.9,
+          price: 12.9,
           type: "kg",
           image: "maca-gala.jpg",
           category: "dia-a-dia",
@@ -1953,6 +1986,7 @@
           type: "kg",
           image: "laranja-cara-cara.jpg",
           category: "citrus",
+          permiteUnidade: true,
         },
         {
           id: 22,
@@ -1969,6 +2003,7 @@
           type: "kg",
           image: "pitaya-vermelha.jpg",
           category: "promocao",
+          permiteUnidade: true,
         },
         {
           id: 24,
@@ -1977,6 +2012,7 @@
           type: "kg",
           image: "atemoia.jpg",
           category: "doces",
+          permiteUnidade: true,
         },
         {
           id: 25,
@@ -2374,6 +2410,15 @@
         const cartItemsContainer = document.getElementById("cart-items");
 
         let subtotal = 0;
+        // Verifica se tem algum item por unidade no carrinho
+        const hasUnidade = cart.some((item) => item.sellingMode === "unidade");
+
+        // Exibe ou oculta a caixa de aviso
+        const avisoUnidadesEl = document.getElementById("aviso-unidades");
+        if (avisoUnidadesEl) {
+          avisoUnidadesEl.style.display = hasUnidade ? "block" : "none";
+        }
+
         if (cartItemsContainer) cartItemsContainer.innerHTML = "";
 
         if (cart.length === 0 && cartItemsContainer) {
@@ -2416,7 +2461,17 @@
 
         if (cartCount) cartCount.textContent = cart.length;
         if (cartSubtotal) cartSubtotal.textContent = formatCurrency(subtotal);
-        if (cartTotal) cartTotal.textContent = formatCurrency(totalFinal);
+
+        // Atualiza o total visualmente se houver itens a calcular
+        if (cartTotal) {
+          if (hasUnidade && totalFinal > 0) {
+            cartTotal.innerHTML = `${formatCurrency(totalFinal)} <span style="font-size:1rem; opacity:0.8; color: var(--text-muted);">+ a calcular</span>`;
+          } else if (hasUnidade && totalFinal === 0) {
+            cartTotal.innerHTML = `<span style="font-size:1.2rem; color: var(--text-muted);">A calcular</span>`;
+          } else {
+            cartTotal.textContent = formatCurrency(totalFinal);
+          }
+        }
 
         calcularTrocoDinâmico(totalFinal);
       }
@@ -2519,7 +2574,7 @@
 
           if (valorDado > total) {
             const troco = valorDado - total;
-            trocoElement.innerHTML = `O seu troco: ${formatCurrency(troco)}`;
+            trocoElement.innerHTML = `O seu troco parcial: ${formatCurrency(troco)}`;
             trocoElement.style.color = "var(--brand-gold)";
           } else if (valorDado === total) {
             trocoElement.innerHTML = "Valor exato. Não precisa de troco.";
@@ -2577,6 +2632,7 @@
 
         const subtotal = cart.reduce((acc, item) => acc + item.subtotal, 0);
         const total = subtotal + TAXA_ENTREGA;
+        const hasUnidade = cart.some((item) => item.sellingMode === "unidade");
 
         const horaAtual = new Date().getHours();
         let saudacao = "Boa noite";
@@ -2613,7 +2669,14 @@
         mensagem += `📊 *RESUMO DOS VALORES:*\n`;
         mensagem += `📝 Subtotal: ${formatCurrency(subtotal)}\n`;
         mensagem += `🛵 Taxa de Entrega: ${formatCurrency(TAXA_ENTREGA)}\n`;
-        mensagem += `💰 *TOTAL: ${formatCurrency(total)}*\n`;
+
+        // NOVO: Mensagem dinâmica para o Total
+        if (hasUnidade) {
+          mensagem += `💰 *TOTAL PARCIAL: ${formatCurrency(total)}*\n`;
+          mensagem += `⏳ _(+ valor das unidades após pesagem)_\n`;
+        } else {
+          mensagem += `💰 *TOTAL: ${formatCurrency(total)}*\n`;
+        }
         mensagem += `➖➖➖➖➖➖➖➖➖➖➖➖\n\n`;
 
         mensagem += `💳 *PAGAMENTO:* `;
@@ -2640,7 +2703,7 @@
           const troco = valorDado - total;
           mensagem += `💸 *Pagamento em:* ${formatCurrency(valorDado)}\n`;
           if (troco > 0) {
-            mensagem += `🪙 *Troco:* ${formatCurrency(troco)}\n`;
+            mensagem += `🪙 *Troco parcial:* ${formatCurrency(troco)}\n`;
           } else {
             mensagem += `🪙 *(Valor Exato, Sem Troco)*\n`;
           }
@@ -2651,7 +2714,11 @@
         }
 
         mensagem += `\n➖➖➖➖➖➖➖➖➖➖➖➖\n`;
-        mensagem += `🙏 _Muito obrigado pela preferência! Aguardo a confirmação._ 💚`;
+        if (hasUnidade) {
+          mensagem += `🙏 _Muito obrigado pela preferência! Fico a aguardar a pesagem e o valor final._ 💚`;
+        } else {
+          mensagem += `🙏 _Muito obrigado pela preferência! Aguardo a confirmação._ 💚`;
+        }
 
         const numeroLoja = "5514997947727";
         const link = `https://wa.me/${numeroLoja}?text=${encodeURIComponent(mensagem)}`;
