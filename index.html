@@ -631,6 +631,31 @@
         border-color: var(--brand-gold);
       }
 
+      /* ESTADO DE PRODUTO ESGOTADO */
+      .pcard.esgotado .pimg {
+        filter: grayscale(100%);
+        opacity: 0.5;
+      }
+      .pcard.esgotado .btn-add {
+        background: #555;
+        color: #ccc;
+        cursor: not-allowed;
+        box-shadow: none;
+        transform: none;
+      }
+      .pcard.esgotado:hover {
+        transform: none;
+        border-color: var(--border-subtle);
+      }
+      .esgotado-badge {
+        background: var(--brand-danger) !important;
+        color: white !important;
+      }
+      [data-theme="light"] .pcard.esgotado .btn-add {
+        background: #e0e0e0;
+        color: #999;
+      }
+
       .promo-badge {
         position: absolute;
         top: 12px;
@@ -662,7 +687,7 @@
         object-fit: cover;
         transition: transform 0.3s ease;
       }
-      .pcard:hover .pimg {
+      .pcard:not(.esgotado):hover .pimg {
         transform: scale(1.05);
       }
 
@@ -898,6 +923,22 @@
         transform: scale(1.05);
       }
 
+      .cart-totals-wrapper {
+        margin-top: 20px;
+        background: var(--bg-input-dark);
+        border-radius: 16px;
+        padding: 15px;
+        border: 1px solid var(--border-subtle);
+      }
+      .cart-sub-row {
+        display: flex;
+        justify-content: space-between;
+        color: var(--text-muted);
+        font-weight: bold;
+        margin-bottom: 10px;
+        font-size: 0.95rem;
+      }
+
       .total-box {
         padding: 20px;
         border-radius: 16px;
@@ -951,6 +992,59 @@
         margin-bottom: 1rem;
         color: var(--text-main);
         font-weight: 900;
+      }
+
+      /* Opções de Entrega/Retirada */
+      .delivery-toggle {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 20px;
+      }
+      .delivery-option {
+        flex: 1;
+      }
+      .delivery-option input[type="radio"] {
+        display: none;
+      }
+      .delivery-option label {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 15px 10px;
+        border: 2px solid var(--border-subtle);
+        border-radius: 12px;
+        cursor: pointer;
+        font-weight: 800;
+        font-size: 0.9rem;
+        color: var(--text-muted);
+        background: var(--bg-input-dark);
+        transition: 0.2s;
+        text-align: center;
+        gap: 8px;
+        line-height: 1.2;
+      }
+      .delivery-option label i {
+        color: var(--text-muted);
+        transition: 0.2s;
+      }
+      .delivery-option input[type="radio"]:checked + label {
+        border-color: var(--brand-gold);
+        background: rgba(244, 195, 0, 0.15);
+        color: var(--text-main);
+        box-shadow: var(--shadow-sm);
+      }
+      .delivery-option input[type="radio"]:checked + label i {
+        color: var(--brand-gold);
+        transform: scale(1.1);
+      }
+      .delivery-option small {
+        color: var(--text-muted);
+        font-weight: 700;
+        font-size: 0.8rem;
+      }
+      .delivery-option input[type="radio"]:checked + label small {
+        color: var(--brand-gold);
+        opacity: 0.8;
       }
 
       .form-group {
@@ -1533,6 +1627,7 @@
               </div>
               <div
                 class="cart-sub-row"
+                id="cart-taxa-row"
                 style="color: var(--brand-green-action)"
               >
                 <span
@@ -1542,7 +1637,7 @@
                 <span>R$ 3,00</span>
               </div>
 
-              <!-- NOVO: Aviso de itens por unidade -->
+              <!-- Aviso de itens por unidade -->
               <div id="aviso-unidades" class="aviso-unidades">
                 <i class="fas fa-balance-scale"></i> <strong>Atenção:</strong> O
                 seu pedido inclui frutas marcadas <em>"Por Unidade"</em>. O
@@ -1559,7 +1654,43 @@
 
           <!-- Coluna 2: Formulário -->
           <div class="checkout-form">
-            <h3>
+            <h3 style="margin-bottom: 1rem">
+              <i class="fas fa-truck" style="color: var(--brand-gold)"></i> Como
+              deseja receber?
+            </h3>
+            <div class="delivery-toggle">
+              <div class="delivery-option">
+                <input
+                  type="radio"
+                  id="modo-entrega"
+                  name="modo_recebimento"
+                  value="entrega"
+                  checked
+                  onchange="toggleModoRecebimento()"
+                />
+                <label for="modo-entrega">
+                  <i class="fas fa-motorcycle" style="font-size: 1.5rem"></i>
+                  Entrega
+                  <small>(Taxa R$ 3,00)</small>
+                </label>
+              </div>
+              <div class="delivery-option">
+                <input
+                  type="radio"
+                  id="modo-retirada"
+                  name="modo_recebimento"
+                  value="retirada"
+                  onchange="toggleModoRecebimento()"
+                />
+                <label for="modo-retirada">
+                  <i class="fas fa-store" style="font-size: 1.5rem"></i>
+                  Retirar na Loja
+                  <small>(Grátis)</small>
+                </label>
+              </div>
+            </div>
+
+            <h3 id="titulo-dados-cliente" style="margin-top: 1.5rem">
               <i
                 class="fas fa-map-marker-alt"
                 style="color: var(--brand-gold)"
@@ -1576,7 +1707,6 @@
               />
             </div>
 
-            <!-- Campo Telefone -->
             <div class="form-group">
               <input
                 type="tel"
@@ -1588,32 +1718,32 @@
               />
             </div>
 
-            <!-- Busca CEP Automática -->
-            <div class="form-group cep-group">
-              <input
-                type="text"
-                id="cliente-cep"
-                placeholder="CEP (Opcional)"
-                maxlength="9"
-                oninput="formatarCEP(this)"
-                onblur="buscarCEP()"
-              />
-              <button
-                type="button"
-                onclick="buscarCEP()"
-                aria-label="Buscar endereço"
-              >
-                <i class="fas fa-search"></i>
-              </button>
-            </div>
+            <div id="endereco-container">
+              <div class="form-group cep-group">
+                <input
+                  type="text"
+                  id="cliente-cep"
+                  placeholder="CEP (Opcional)"
+                  maxlength="9"
+                  oninput="formatarCEP(this)"
+                  onblur="buscarCEP()"
+                />
+                <button
+                  type="button"
+                  onclick="buscarCEP()"
+                  aria-label="Buscar endereço"
+                >
+                  <i class="fas fa-search"></i>
+                </button>
+              </div>
 
-            <div class="form-group">
-              <input
-                type="text"
-                id="cliente-endereco"
-                placeholder="Rua, Número, Bairro"
-                required
-              />
+              <div class="form-group">
+                <input
+                  type="text"
+                  id="cliente-endereco"
+                  placeholder="Rua, Número, Bairro"
+                />
+              </div>
             </div>
 
             <div class="form-group">
@@ -1816,7 +1946,7 @@
         {
           id: 2,
           name: "Maracujá",
-          price: 13.9,
+          price: 14.9,
           type: "kg",
           image: "maracuja.jpg",
           category: "citrus",
@@ -1825,7 +1955,7 @@
         {
           id: 3,
           name: "Banana Prata",
-          price: 7.5,
+          price: 9.9,
           type: "kg",
           image: "banana-prata.jpg",
           category: "dia-a-dia",
@@ -1847,6 +1977,7 @@
           type: "tray",
           image: "morango-bandeja.jpg",
           category: "promocao",
+          esgotado: true,
         },
         {
           id: 6,
@@ -1946,7 +2077,7 @@
         {
           id: 17,
           name: "Manga Tommy",
-          price: 6.8,
+          price: 8.75,
           type: "kg",
           image: "manga-tommy.jpg",
           category: "doces",
@@ -2025,11 +2156,21 @@
             { label: "Meia", price: 25 },
             { label: "1/4", price: 15 },
           ],
+          esgotado: true,
+        },
+        {
+          id: 26,
+          name: "Mexerica Ponkan",
+          price: 6.9,
+          type: "kg",
+          image: "mexerica-ponkan.jpg",
+          category: "citrus",
+          permiteUnidade: true,
         },
       ];
 
       let cart = JSON.parse(localStorage.getItem("imperio_cart")) || [];
-      const TAXA_ENTREGA = 3.0;
+      let taxaAtual = 3.0; // Alterado para variável dinâmica
 
       const typeConfig = {
         kg: {
@@ -2074,7 +2215,7 @@
         }, 3000);
       }
 
-      // --- SISTEMA DE TEMA (CLARO/ESCURO) ---
+      // --- SISTEMA DE TEMA E OPÇÕES ---
       function toggleTheme() {
         const html = document.documentElement;
         const themeIcon = document.getElementById("theme-icon");
@@ -2099,8 +2240,30 @@
         });
       }
 
-      // --- LÓGICA DE PRODUTOS E CARRINHO ---
+      function toggleModoRecebimento() {
+        const modo = document.querySelector(
+          'input[name="modo_recebimento"]:checked',
+        ).value;
+        const containerEndereco = document.getElementById("endereco-container");
+        const tituloDados = document.getElementById("titulo-dados-cliente");
 
+        if (modo === "retirada") {
+          containerEndereco.style.display = "none";
+          taxaAtual = 0;
+          if (tituloDados)
+            tituloDados.innerHTML =
+              '<i class="fas fa-user" style="color: var(--brand-gold);"></i> Seus Dados';
+        } else {
+          containerEndereco.style.display = "block";
+          taxaAtual = 3.0;
+          if (tituloDados)
+            tituloDados.innerHTML =
+              '<i class="fas fa-map-marker-alt" style="color: var(--brand-gold);"></i> Onde vamos entregar?';
+        }
+        updateUI();
+      }
+
+      // --- LÓGICA DE PRODUTOS E CARRINHO ---
       let currentCategory = "todos";
       let searchQuery = "";
 
@@ -2136,26 +2299,21 @@
         updateDynamicPrice(prodId);
       }
 
-      // Função para selecionar fatia via Segmented Control
       function selectFraction(prodId, optionIndex, btnElement) {
         const container = btnElement.parentElement;
         const hiddenInput = document.getElementById(`input-${prodId}`);
         if (!hiddenInput) return;
 
-        // Atualiza o input oculto
         hiddenInput.value = optionIndex;
 
-        // Atualiza classe visual nos botões (pílulas)
         container
           .querySelectorAll(".fraction-btn")
           .forEach((btn) => btn.classList.remove("active"));
         btnElement.classList.add("active");
 
-        // Recalcula valor
         updateDynamicPrice(prodId);
       }
 
-      // NOVO: Função para alternar entre Kg e Unidade
       function setSellMode(prodId, mode) {
         const btnKg = document.getElementById(`btn-mode-kg-${prodId}`);
         const btnUn = document.getElementById(`btn-mode-un-${prodId}`);
@@ -2234,15 +2392,19 @@
         filteredProducts.forEach((prod) => {
           const config = typeConfig[prod.type];
           const card = document.createElement("div");
-          card.className = "pcard fade-in-up";
+          card.className = `pcard fade-in-up ${prod.esgotado ? "esgotado" : ""}`;
 
           let priceDisplay = "";
           let controlsHTML = "";
 
+          // Define selo de promoção ou esgotado
+          let badgeHTML = prod.esgotado
+            ? `<div class="promo-badge esgotado-badge">Esgotado</div>`
+            : `<div class="promo-badge">${config.badge}</div>`;
+
           if (prod.type === "fraction") {
             priceDisplay = `<span style="font-size: 0.9rem;">Opções de corte</span>`;
 
-            // Design renovado em Segmented Control (Pílulas)
             let buttonsHTML = prod.options
               .map(
                 (opt, index) =>
@@ -2260,7 +2422,7 @@
             priceDisplay = `${formatCurrency(prod.price)} <small>${config.label}</small>`;
 
             let modeToggleHTML = "";
-            if (prod.permiteUnidade) {
+            if (prod.permiteUnidade && !prod.esgotado) {
               modeToggleHTML = `
                             <div class="fraction-selector" style="margin-bottom: 8px;">
                                 <div class="fraction-btn active" id="btn-mode-kg-${prod.id}" onclick="setSellMode(${prod.id}, 'kg')">Por Kg</div>
@@ -2273,9 +2435,9 @@
             controlsHTML = `
                         ${modeToggleHTML}
                         <div class="qty-control">
-                            <button class="qty-btn" onclick="changeQty(${prod.id}, -1)">-</button>
+                            <button class="qty-btn" onclick="changeQty(${prod.id}, -1)" ${prod.esgotado ? "disabled" : ""}>-</button>
                             <input type="number" class="qty-input" id="input-${prod.id}" step="${config.step}" min="${config.min}" value="${config.min}" readonly>
-                            <button class="qty-btn" onclick="changeQty(${prod.id}, 1)">+</button>
+                            <button class="qty-btn" onclick="changeQty(${prod.id}, 1)" ${prod.esgotado ? "disabled" : ""}>+</button>
                         </div>
                     `;
           }
@@ -2283,7 +2445,7 @@
           const imagePath = `assets/img/${prod.image}`;
 
           card.innerHTML = `
-                    <div class="promo-badge">${config.badge}</div>
+                    ${badgeHTML}
                     <div class="photo-container">
                         <img src="${imagePath}" alt="${prod.name}" class="pimg" onerror="this.src='https://placehold.co/400x300/e8f5e9/1E7D32?text=Fruta'">
                     </div>
@@ -2291,22 +2453,26 @@
                     
                     <div class="price-stack">
                         <div class="price">${priceDisplay}</div>
-                        <div id="dynamic-price-${prod.id}" class="dynamic-price-tag">Calculando...</div>
+                        <div id="dynamic-price-${prod.id}" class="dynamic-price-tag">${prod.esgotado ? "Indisponível" : "Calculando..."}</div>
                     </div>
                     
                     ${controlsHTML}
                     
-                    <button class="btn-add pulse-hover" onclick="addToCart(${prod.id})" aria-label="Adicionar ${prod.name}">
-                        <i class="fas fa-plus"></i> Adicionar
+                    <button class="btn-add pulse-hover" onclick="addToCart(${prod.id})" aria-label="Adicionar ${prod.name}" ${prod.esgotado ? "disabled" : ""}>
+                        <i class="fas ${prod.esgotado ? "fa-ban" : "fa-plus"}"></i> ${prod.esgotado ? "Esgotado" : "Adicionar"}
                     </button>
                 `;
           grid.appendChild(card);
-          setTimeout(() => updateDynamicPrice(prod.id), 0);
+          if (!prod.esgotado) {
+            setTimeout(() => updateDynamicPrice(prod.id), 0);
+          }
         });
       }
 
       function addToCart(productId) {
         const product = produtos.find((p) => p.id === productId);
+        if (product.esgotado) return; // Segurança extra
+
         const inputElement = document.getElementById(`input-${productId}`);
         const modeInput = document.getElementById(`mode-${productId}`);
         if (!product || !inputElement) return;
@@ -2343,7 +2509,7 @@
           } else {
             price = product.price;
             subtotal = price * quantity;
-            sellingMode = "kg"; // explicitly mark it for grouping
+            sellingMode = "kg";
           }
         }
 
@@ -2408,12 +2574,11 @@
         const cartTotal = document.getElementById("cart-total");
         const cartSubtotal = document.getElementById("cart-subtotal");
         const cartItemsContainer = document.getElementById("cart-items");
+        const cartTaxaRow = document.getElementById("cart-taxa-row");
 
         let subtotal = 0;
-        // Verifica se tem algum item por unidade no carrinho
         const hasUnidade = cart.some((item) => item.sellingMode === "unidade");
 
-        // Exibe ou oculta a caixa de aviso
         const avisoUnidadesEl = document.getElementById("aviso-unidades");
         if (avisoUnidadesEl) {
           avisoUnidadesEl.style.display = hasUnidade ? "block" : "none";
@@ -2457,12 +2622,23 @@
           }
         });
 
-        const totalFinal = cart.length > 0 ? subtotal + TAXA_ENTREGA : 0;
+        const totalFinal = cart.length > 0 ? subtotal + taxaAtual : 0;
 
         if (cartCount) cartCount.textContent = cart.length;
         if (cartSubtotal) cartSubtotal.textContent = formatCurrency(subtotal);
 
-        // Atualiza o total visualmente se houver itens a calcular
+        // Atualiza linha de taxa consoante entrega/retirada
+        if (cartTaxaRow) {
+          const modo = document.querySelector(
+            'input[name="modo_recebimento"]:checked',
+          ).value;
+          if (modo === "retirada") {
+            cartTaxaRow.innerHTML = `<span><i class="fas fa-store"></i> Retirada na Loja</span><span style="color: var(--brand-green-action);">Grátis</span>`;
+          } else {
+            cartTaxaRow.innerHTML = `<span><i class="fas fa-motorcycle"></i> Taxa de Entrega (Piraju)</span><span>${formatCurrency(taxaAtual)}</span>`;
+          }
+        }
+
         if (cartTotal) {
           if (hasUnidade && totalFinal > 0) {
             cartTotal.innerHTML = `${formatCurrency(totalFinal)} <span style="font-size:1rem; opacity:0.8; color: var(--text-muted);">+ a calcular</span>`;
@@ -2549,7 +2725,7 @@
       if (valorDinheiroEl) {
         valorDinheiroEl.addEventListener("input", () => {
           const subtotal = cart.reduce((acc, item) => acc + item.subtotal, 0);
-          const totalFinal = cart.length > 0 ? subtotal + TAXA_ENTREGA : 0;
+          const totalFinal = cart.length > 0 ? subtotal + taxaAtual : 0;
           calcularTrocoDinâmico(totalFinal);
         });
       }
@@ -2600,13 +2776,15 @@
           return;
         }
 
-        // Aceder em segurança aos elementos, para evitar falhas caso o HTML não esteja a carregar bem
         const nomeInput = document.getElementById("cliente-nome");
         const telefoneInput = document.getElementById("cliente-telefone");
         const enderecoInput = document.getElementById("cliente-endereco");
         const observacoesInput = document.getElementById("pedido-observacoes");
         const pagamentoElement = document.querySelector(
           'input[name="pagamento"]:checked',
+        );
+        const modoRecebimentoElement = document.querySelector(
+          'input[name="modo_recebimento"]:checked',
         );
 
         const nome = nomeInput ? nomeInput.value.trim() : "";
@@ -2618,20 +2796,28 @@
         const pagamento = pagamentoElement
           ? pagamentoElement.value
           : "Não informado";
+        const modoRecebimento = modoRecebimentoElement
+          ? modoRecebimentoElement.value
+          : "entrega";
 
-        if (!nome || !telefone || !endereco) {
-          showToast(
-            "Por favor, preencha nome, telefone e endereço.",
-            "fa-user-edit",
-          );
+        if (!nome || !telefone) {
+          showToast("Por favor, preencha nome e telefone.", "fa-user-edit");
           if (nomeInput && !nome) nomeInput.focus();
           else if (telefoneInput && !telefone) telefoneInput.focus();
-          else if (enderecoInput && !endereco) enderecoInput.focus();
+          return;
+        }
+
+        if (modoRecebimento === "entrega" && !endereco) {
+          showToast(
+            "Por favor, preencha o seu endereço de entrega.",
+            "fa-map-marker-alt",
+          );
+          if (enderecoInput) enderecoInput.focus();
           return;
         }
 
         const subtotal = cart.reduce((acc, item) => acc + item.subtotal, 0);
-        const total = subtotal + TAXA_ENTREGA;
+        const total = subtotal + taxaAtual;
         const hasUnidade = cart.some((item) => item.sellingMode === "unidade");
 
         const horaAtual = new Date().getHours();
@@ -2645,10 +2831,17 @@
 
         mensagem += `👋 *${saudacao}!* Aqui está o meu pedido:\n\n`;
 
-        mensagem += `🧾 *DADOS DA ENTREGA* 🛵💨\n`;
-        mensagem += `👤 *Cliente:* ${nome}\n`;
-        mensagem += `📱 *Contato:* ${telefone}\n`;
-        mensagem += `📍 *Endereço:* ${endereco}\n`;
+        if (modoRecebimento === "entrega") {
+          mensagem += `🧾 *DADOS DA ENTREGA* 🛵💨\n`;
+          mensagem += `👤 *Cliente:* ${nome}\n`;
+          mensagem += `📱 *Contato:* ${telefone}\n`;
+          mensagem += `📍 *Endereço:* ${endereco}\n`;
+        } else {
+          mensagem += `🧾 *DADOS DA RETIRADA* 🏪🛍️\n`;
+          mensagem += `👤 *Cliente:* ${nome}\n`;
+          mensagem += `📱 *Contato:* ${telefone}\n`;
+          mensagem += `⚠️ _Irei levantar o pedido diretamente na loja._\n`;
+        }
         mensagem += `➖➖➖➖➖➖➖➖➖➖➖➖\n\n`;
 
         mensagem += `🛒 *ÍTENS DO PEDIDO:*\n`;
@@ -2668,9 +2861,12 @@
         mensagem += `\n➖➖➖➖➖➖➖➖➖➖➖➖\n`;
         mensagem += `📊 *RESUMO DOS VALORES:*\n`;
         mensagem += `📝 Subtotal: ${formatCurrency(subtotal)}\n`;
-        mensagem += `🛵 Taxa de Entrega: ${formatCurrency(TAXA_ENTREGA)}\n`;
+        if (modoRecebimento === "entrega") {
+          mensagem += `🛵 Taxa de Entrega: ${formatCurrency(taxaAtual)}\n`;
+        } else {
+          mensagem += `🏪 Taxa: Grátis (Retirada)\n`;
+        }
 
-        // NOVO: Mensagem dinâmica para o Total
         if (hasUnidade) {
           mensagem += `💰 *TOTAL PARCIAL: ${formatCurrency(total)}*\n`;
           mensagem += `⏳ _(+ valor das unidades após pesagem)_\n`;
