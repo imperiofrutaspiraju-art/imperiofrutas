@@ -1937,7 +1937,7 @@
         {
           id: 1,
           name: "Goiaba",
-          price: 16.5,
+          price: 12.9,
           type: "kg",
           image: "goiaba.jpg",
           category: "doces",
@@ -1964,7 +1964,7 @@
         {
           id: 4,
           name: "Banana Nanica",
-          price: 6.75,
+          price: 4.65,
           type: "kg",
           image: "banana-nanica.jpg",
           category: "dia-a-dia",
@@ -2000,7 +2000,7 @@
         {
           id: 8,
           name: "Abacaxi Pérola",
-          price: 14.9,
+          price: 10.99,
           type: "unit",
           image: "abacaxi-perola.jpg",
           category: "citrus",
@@ -2022,6 +2022,7 @@
           image: "laranja-pera-rio.jpg",
           category: "citrus",
           permiteUnidade: true,
+          esgotado: true,
         },
         {
           id: 11,
@@ -2042,7 +2043,7 @@
         {
           id: 13,
           name: "Uva sem semente",
-          price: 14.99,
+          price: 9.9,
           type: "tray",
           image: "uvas-sem-semente-caixinha.jpg",
           category: "doces",
@@ -2104,7 +2105,7 @@
         {
           id: 20,
           name: "Maçã Gala",
-          price: 12.9,
+          price: 15.75,
           type: "kg",
           image: "maca-gala.jpg",
           category: "dia-a-dia",
@@ -2139,7 +2140,7 @@
         {
           id: 24,
           name: "Atemoia",
-          price: 27.9,
+          price: 19.9,
           type: "kg",
           image: "atemoia.jpg",
           category: "doces",
@@ -2156,7 +2157,7 @@
             { label: "Meia", price: 25 },
             { label: "1/4", price: 15 },
           ],
-          esgotado: true,
+          esgotado: false,
         },
         {
           id: 26,
@@ -2166,9 +2167,18 @@
           image: "mexerica-ponkan.jpg",
           category: "citrus",
           permiteUnidade: true,
+          esgotado: true,
+        },
+        {
+          id: 27,
+          name: "Laranja Valência",
+          price: 4.65,
+          type: "kg",
+          image: "laranja-valencia.jpg",
+          category: "citrus",
+          permiteUnidade: true,
         },
       ];
-
       let cart = JSON.parse(localStorage.getItem("imperio_cart")) || [];
       let taxaAtual = 3.0; // Alterado para variável dinâmica
 
